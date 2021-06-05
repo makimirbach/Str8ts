@@ -2,16 +2,25 @@ package application;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Str8t {
 	private int n; // size
-	private int[][] solution;
-	private int[][] state;
+	private int[][] solution; // 0 on black cells, negative for white number on black field, positive for black numbers on white
+	private int[][] state; // positive for already visible numbers (on black & white)
+	private ArrayList<Integer>[][] notes;
+	
 	
 	public Str8t(int n, int[][] solution, int[][] state) {
 		this.n = n;
 		this.solution = solution;
 		this.state = state;
+		this.notes = new ArrayList[this.n][this.n];
+		for (int i = 0; i < this.n; i++) {
+			for (int j = 0; j < this.n; j++) {
+				notes[i][j] = new ArrayList<Integer>();
+			}
+		}
 	}
 	public int getN() {
 		return n;
@@ -31,7 +40,12 @@ public class Str8t {
 	public void setState(int[][] state) {
 		this.state = state;
 	}
-	
+	public ArrayList<Integer>[][] getNotes() {
+		return notes;
+	}
+	public void setNotes(ArrayList<Integer>[][] notes) {
+		this.notes = notes;
+	}
 	
 	/*
 	 * check if str8t s is valid i.e. contains only consecutive numbers
@@ -76,7 +90,6 @@ public class Str8t {
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -95,7 +108,6 @@ public class Str8t {
 				}
 			}
 		}
-		
 		return true;
 	}
 	public boolean checkValidState() {
@@ -129,7 +141,7 @@ public class Str8t {
 					}
 					s.clear();
 				} else {
-					// not zero here and white field
+					// not zero here and white cell
 					s.add(this.state[i][j]);
 				}
 			}
@@ -142,7 +154,7 @@ public class Str8t {
 			s.clear();
 			// check columns
 			for (int j = 0; j < this.n; j++) {
-				// nothing entered yet or black field
+				// nothing entered yet or black cell
 				if (this.state[j][i] == 0 || this.solution[j][i] < 0) {
 					if (s.size()> 1) {
 						if (!checkStr8t(Helper.listToArray(s))) {
@@ -152,7 +164,7 @@ public class Str8t {
 					}
 					s.clear();
 				} else {
-					// not zero here and white field
+					// not zero here and white cell
 					s.add(this.state[j][i]);
 				}
 			}
@@ -166,6 +178,23 @@ public class Str8t {
 		}
 		return true;
 	}
+	
+	public void updateNotes(int r, int c, String note) {
+		ArrayList<Integer> noteList = new ArrayList<Integer>();
+		for (char x: note.toCharArray()) {
+			if (!Character.isDigit(x)) {
+				int t = Integer.parseInt(String.valueOf(x));
+				if (t > 0 && t <= this.n) {
+					noteList.add(t);
+				}
+			}
+		}
+		Collections.sort(noteList);
+		ArrayList<Integer>[][] newNotes = this.notes;
+		newNotes[r][c] = noteList;
+		setNotes(newNotes);
+	}
+	
 	public void print() {
 		for (int i= 0; i < this.n; i++) {
 			for (int j = 0; j < this.n; j++) {
@@ -183,5 +212,7 @@ public class Str8t {
 			setState(newState);
 		}
 	}
+	
+	
 	
 }
