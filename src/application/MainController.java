@@ -41,6 +41,8 @@ public class MainController implements Initializable {
 	
 	@FXML
 	private Button btnHelp;
+	@FXML
+	private Button btnStart;
 	
 	@FXML
 	private CheckBox checkHints;
@@ -62,10 +64,14 @@ public class MainController implements Initializable {
 		
 		gpBase.setGridLinesVisible(true);
 		// n x n layout grid
-		for (int i = 0; i < n; i++) {
-			gpBase.getColumnConstraints().add(new ColumnConstraints(cellMeasure));
-			gpBase.getRowConstraints().add(new RowConstraints(cellMeasure));
+		if (gpBase.getColumnConstraints().size() == 0) {
+			for (int i = 0; i < n; i++) {
+				gpBase.getColumnConstraints().add(new ColumnConstraints(cellMeasure));
+				gpBase.getRowConstraints().add(new RowConstraints(cellMeasure));
+			}
 		}
+		
+		
 		gridTf = new TextField[n][n];
 		// fill with textfields
 		for (int i = 0; i < n; i++) {
@@ -113,12 +119,15 @@ public class MainController implements Initializable {
 	public void startGame(int n) {
 
 		if (state == GameState.BEFORE) {
+			gpBase.setVisible(true);
 			showCorrect = false;
 			cbSize.setVisible(false);
 			lblMain.setVisible(false);
+			btnStart.setVisible(false);
 			checkHints.setVisible(true);
 			checkHints.setText(Messages.HINTS);
 			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
+			//int[][] s = {{4,6,5,0,1,2},{5,4,6,3,2,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{2,3,1,6,5,4},{3,2,0,5,4,0}};
 			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
 			str8t = new Str8t(n, m, s);
 			initGrid(n);
@@ -133,33 +142,35 @@ public class MainController implements Initializable {
 	 * several: -> notes
 	 */
 	public void tfExit(int i, int j) {
-		
-		TextField tf = gridTf[i][j]; //todo get current field
-		
-		if (!tf.getText().equals("")) {
-			// more than one number entered
-			if (tf.getText().length() > 1) {
-				str8t.updateNotes(i, j, tf.getText());
-				tf.getStyleClass().add("notes");
-				tf.setText(str8t.getNotesString(i, j));
-				str8t.enterNumber(i, j, 0);
-			} else {
-				if (Character.isDigit(tf.getText().toCharArray()[0])) {
-					tf.getStyleClass().remove("notes");
-					if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
-						tf.setText("");
-					}
-					str8t.print();
-				} else {
-					tf.setText("");
+		if (state == GameState.PLAYING) {
+			TextField tf = gridTf[i][j]; //todo get current field
+			
+			if (!tf.getText().equals("")) {
+				// more than one number entered
+				if (tf.getText().length() > 1) {
+					str8t.updateNotes(i, j, tf.getText());
+					tf.getStyleClass().add("notes");
+					tf.setText(str8t.getNotesString(i, j));
 					str8t.enterNumber(i, j, 0);
+				} else {
+					if (Character.isDigit(tf.getText().toCharArray()[0])) {
+						tf.getStyleClass().remove("notes");
+						if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
+							tf.setText("");
+						}
+						str8t.print();
+					} else {
+						tf.setText("");
+						str8t.enterNumber(i, j, 0);
+					}
 				}
+				if (showCorrect) showThisCorrect(i,j);
+			} else str8t.enterNumber(i, j, 0);
+			
+			if (str8t.gameOver()) {
+				gameOver();
+				
 			}
-			if (showCorrect) showThisCorrect(i,j);
-		}
-		
-		if (str8t.gameOver()) {
-			state = GameState.AFTER;
 		}
 	}
 	/*
@@ -169,15 +180,29 @@ public class MainController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		cbSize.setItems(lstSizes);
 		cbSize.setPromptText(Messages.CHOOSE_SIZE);
+		btnStart.setText(Messages.CLICK_START);
+		state = GameState.BEFORE;
+		init();	
+	}
+	
+	public void init() {
+		if (state != GameState.BEFORE) {
+			gpBase.setVisible(false);
+			cbSize.setVisible(true);
+			lblMain.setVisible(true);
+			btnStart.setVisible(true);
+			state = GameState.BEFORE;
+		}
 		lblMain.setText(Messages.START_GAME);
 		checkHints.setVisible(false);
 	}
 	/*
 	 * very beginning: user chooses size
 	 */
-	public void comboSizeChanged(ActionEvent event) {
+	public void clickStart(ActionEvent event) {
 		
-		startGame(cbSize.getValue());
+		if (!cbSize.getSelectionModel().isEmpty()) startGame(cbSize.getValue());
+		else System.out.println("nah");
 		
 	}
 	/*
@@ -249,6 +274,19 @@ public class MainController implements Initializable {
 				gridTf[i][j].getStyleClass().removeAll("false", "correct");
 			}
 		}
+	}
+	
+	public void gameOver() {
+		if (state != GameState.AFTER) {
+			state = GameState.AFTER;
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		    alert.setTitle(Messages.OVER_MENU);
+		    alert.setHeaderText(Messages.OVER_HEADER);
+		    alert.setContentText(Messages.GAME_OVER);
+		    alert.setOnHidden(e -> init());
+		    alert.show();
+		}
+	    
 	}
 	
 }
