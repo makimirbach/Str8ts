@@ -182,9 +182,9 @@ public class Str8t {
 	public void updateNotes(int r, int c, String note) {
 		ArrayList<Integer> noteList = new ArrayList<Integer>();
 		for (char x: note.toCharArray()) {
-			if (!Character.isDigit(x)) {
+			if (Character.isDigit(x)) {
 				int t = Integer.parseInt(String.valueOf(x));
-				if (t > 0 && t <= this.n) {
+				if (t > 0 && t <= this.n && !noteList.contains(t)) {
 					noteList.add(t);
 				}
 			}
@@ -205,14 +205,27 @@ public class Str8t {
 		System.out.println();
 	}
 	
-	public void enterNumber(int r, int c, int x) {
+	public boolean enterNumber(int r, int c, int x) {
+		int[][] newState = this.state;
 		if (x > 0 && x <= this.n) {
-			int[][] newState = this.state;
 			newState[r][c] = x;
 			setState(newState);
+			return true;
 		}
+		newState[r][c] = 0;
+		setState(newState);
+		return false;
 	}
 	
-	
+	/*
+	 * concatenate notes(ints) to string
+	 */
+	public String getNotesString(int r, int c) {
+		String s = "";
+		for (int i: this.notes[r][c]) {
+			s+= Integer.toString(i);
+		}
+		return s;
+	}
 	
 }

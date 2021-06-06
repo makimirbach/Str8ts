@@ -2,5 +2,25 @@
 	-fx-padding: 5px;
     -fx-border-insets: 5px;
     -fx-background-insets: 5px;
+    -fx-font-family: "Calibry light";
+    -fx-font-size: 40;
+    -fx-alignment: center;
+}
+
+.blocked-black {
+	/*-fx-font-family: "serif";*/
+	-fx-font-weight: bold;
+	-fx-background-color: black;
+	-fx-text-fill: white;
+}
+
+.blocked-white {
+	-fx-font-family: "serif";
+	-fx-font-weight: bold;
+	-fx-text-fill: black;
+}
+
+.notes {
+	-fx-font-size: 15;
 }
 

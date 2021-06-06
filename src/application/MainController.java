@@ -15,6 +15,8 @@ public class MainController {
 	@FXML
 	private TextField[][] gridTf;
 	
+	private Str8t str8t;
+	
 	
 	
 	
@@ -38,16 +40,36 @@ public class MainController {
 				TextField newField = new TextField();
 				newField.setId("tf"+i+j);
 				newField.setMaxSize(cellMeasure, cellMeasure);
-				newField.setAlignment(Pos.CENTER);
-				newField.setFont(Font.font("Calibri Light", 40));
-				gpBase.add(newField, i, j);  // column=i row=j
+			
+				// paint black cells
+				if (str8t.getSolution()[i][j] <= 0) {
+					newField.getStyleClass().add("blocked-black");
+					// white numbers on black cells
+					if (str8t.getSolution()[i][j] < 0) newField.setText(Integer.toString(str8t.getState()[i][j]));
+					newField.setEditable(false);
+				}
+				// black numbers on white cells from state
+				else if (str8t.getState()[i][j] != 0) {
+					newField.setText(Integer.toString(str8t.getState()[i][j]));
+					newField.getStyleClass().add("blocked-white");
+					newField.setEditable(false);
+				}
+				else {
+					newField.setOnAction(e->tfExit()); // called by Enter
+				}
+				
+				gpBase.add(newField, j, i);  // column=i row=j
 				gridTf[i][j] = newField;
 			}
 		}
 	}
 	
 	public void startGame() {
-		initGrid(9);
+		
+		int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
+		int[][] state = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
+		str8t = new Str8t(6, m, state);
+		initGrid(6);
 		System.out.println("go!");
 	}
 	
@@ -58,10 +80,32 @@ public class MainController {
 	 */
 	public void tfExit() {
 		
+		int i = 0;
+		int j = 2;
+		TextField tf = gridTf[i][j]; //todo get current field
+		
+		// more than one number entered
+		if (tf.getText().length() > 1) {
+			str8t.updateNotes(i, j, tf.getText());
+			tf.getStyleClass().add("notes");
+			tf.setText(str8t.getNotesString(i, j));
+			str8t.enterNumber(i, j, 0);
+		} else {
+			if (Character.isDigit(tf.getText().toCharArray()[0])) {
+				tf.getStyleClass().remove("notes");
+				if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
+					tf.setText("");
+				}
+				str8t.print();
+			} else {
+				tf.setText("");
+			}
+		}
 	}
 	
 	public void writeTest() {
-		String t = gridTf[0][0].getText();
-		gridTf[4][5].setText(t);
+		
+		String t = gridTf[0][1].getText();
+		System.out.println(t);
 	}
 }
