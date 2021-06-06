@@ -235,4 +235,11 @@ public class Str8t {
 		return true;
 	}
 	
+	public boolean checkNumberCorrect(int r, int c) {
+		if ((this.state[r][c] == this.solution[r][c] && this.state[r][c] != 0) || this.solution[r][c] < 0) return true;
+		return false;
+	}
+	
+	
+	
 }

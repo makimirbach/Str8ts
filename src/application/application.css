@@ -7,20 +7,35 @@
     -fx-alignment: center;
 }
 
-.blocked-black {
-	/*-fx-font-family: "serif";*/
+.blocked {
+	-fx-font-family: "serif";
 	-fx-font-weight: bold;
+}
+.blocked-black {
 	-fx-background-color: black;
 	-fx-text-fill: white;
 }
 
 .blocked-white {
-	-fx-font-family: "serif";
-	-fx-font-weight: bold;
 	-fx-text-fill: black;
 }
 
 .notes {
 	-fx-font-size: 15;
+}
+
+.label-rules {
+	-fx-background-color: white;
+	-fx-border-width: 2;
+	-fx-border-color: gray;
+	
+}
+
+.correct {
+	-fx-text-fill: green;
+}
+
+.false {
+	-fx-text-fill: red;
 }
 

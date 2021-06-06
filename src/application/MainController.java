@@ -13,9 +13,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -34,6 +38,14 @@ public class MainController implements Initializable {
 	@FXML
 	private Label lblMain;
 	private Str8t str8t;
+	
+	@FXML
+	private Button btnHelp;
+	
+	@FXML
+	private CheckBox checkHints;
+	
+	private boolean showCorrect;
 	
 	private GameState state = GameState.BEFORE;
 	
@@ -64,7 +76,7 @@ public class MainController implements Initializable {
 			
 				// paint black cells
 				if (str8t.getSolution()[i][j] <= 0) {
-					newField.getStyleClass().add("blocked-black");
+					newField.getStyleClass().addAll("blocked-black", "blocked");
 					// white numbers on black cells
 					if (str8t.getSolution()[i][j] < 0) newField.setText(Integer.toString(str8t.getState()[i][j]));
 					newField.setEditable(false);
@@ -72,7 +84,7 @@ public class MainController implements Initializable {
 				// black numbers on white cells from state
 				else if (str8t.getState()[i][j] != 0) {
 					newField.setText(Integer.toString(str8t.getState()[i][j]));
-					newField.getStyleClass().add("blocked-white");
+					newField.getStyleClass().addAll("blocked-white", "blocked");
 					newField.setEditable(false);
 					//newField.setDisable(true); // makes it gray. When do numbers get small by clicking on them??
 				}
@@ -101,6 +113,11 @@ public class MainController implements Initializable {
 	public void startGame(int n) {
 
 		if (state == GameState.BEFORE) {
+			showCorrect = false;
+			cbSize.setVisible(false);
+			lblMain.setVisible(false);
+			checkHints.setVisible(true);
+			checkHints.setText(Messages.HINTS);
 			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
 			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
 			str8t = new Str8t(n, m, s);
@@ -135,27 +152,103 @@ public class MainController implements Initializable {
 					str8t.print();
 				} else {
 					tf.setText("");
+					str8t.enterNumber(i, j, 0);
 				}
 			}
+			if (showCorrect) showThisCorrect(i,j);
 		}
 		
 		if (str8t.gameOver()) {
 			state = GameState.AFTER;
 		}
 	}
-
+	/*
+	 * init layout
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		cbSize.setItems(lstSizes);
 		cbSize.setPromptText(Messages.CHOOSE_SIZE);
 		lblMain.setText(Messages.START_GAME);
+		checkHints.setVisible(false);
 	}
-	
+	/*
+	 * very beginning: user chooses size
+	 */
 	public void comboSizeChanged(ActionEvent event) {
 		
 		startGame(cbSize.getValue());
-		cbSize.setVisible(false);
-		lblMain.setVisible(false);
+		
+	}
+	/*
+	 * mouse hover on help button
+	 */
+	public void showHelpTip() {
+		btnHelp.setTooltip(new Tooltip(Messages.HELP_MENU));
+	}
+	/*
+	 * click on help button
+	 */
+	public void showHelp() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle(Messages.HELP_MENU);
+	    alert.setHeaderText(Messages.RULES_HEADER);
+	    alert.setContentText(Messages.RULES);
+	    alert.showAndWait();
+	    
+	}
+	/*
+	 * click on checkbox 'hints'
+	 */
+	public void handleCheckHints() {
+		if (checkHints.isSelected()) {
+			showCurrentCorrect();
+			showCorrect = true;
+		} else {
+			unshowCorrect();
+			showCorrect = false;
+		}
+	}
+	
+	/*
+	 * color this one entry
+	 */
+	public void showThisCorrect(int i,int j) {
+		if (str8t.checkNumberCorrect(i, j)) {
+			gridTf[i][j].getStyleClass().remove("false");
+			gridTf[i][j].getStyleClass().add("correct");
+		} else  {
+			gridTf[i][j].getStyleClass().remove("correct");
+			gridTf[i][j].getStyleClass().add("false");
+		}
+	}
+	
+	/*
+	 * color all (by user entered) numbers red (false) or green (correct)
+	 */
+	public void showCurrentCorrect() {
+		for (int i = 0; i < str8t.getN(); i++) {
+			for (int j = 0; j< str8t.getN(); j++) {
+				if (!gridTf[i][j].getStyleClass().contains("blocked") && str8t.getState()[i][j] != 0) {
+						if (str8t.checkNumberCorrect(i, j)) {
+						//correct and none of the initially displayed numbers
+						 gridTf[i][j].getStyleClass().add("correct");
+					} else gridTf[i][j].getStyleClass().add("false");
+				}
+				
+			}
+		}
+	}
+	
+	/*
+	 * uncolor all numbers
+	 */
+	public void unshowCorrect() {
+		for (int i = 0; i < str8t.getN(); i++) {
+			for (int j = 0; j < str8t.getN(); j++) {
+				gridTf[i][j].getStyleClass().removeAll("false", "correct");
+			}
+		}
 	}
 	
 }
