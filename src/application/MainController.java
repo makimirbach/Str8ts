@@ -1,12 +1,13 @@
 package application;
 
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Font;
 
 public class MainController {
 	@FXML
@@ -16,6 +17,7 @@ public class MainController {
 	private TextField[][] gridTf;
 	
 	private Str8t str8t;
+	
 	
 	
 	
@@ -53,9 +55,22 @@ public class MainController {
 					newField.setText(Integer.toString(str8t.getState()[i][j]));
 					newField.getStyleClass().add("blocked-white");
 					newField.setEditable(false);
+					//newField.setDisable(true); // makes it gray. When do numbers get small by clicking on them??
 				}
+				// normal white cells: action on leaving one
 				else {
-					newField.setOnAction(e->tfExit()); // called by Enter
+					newField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+						@Override
+						public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
+							if (!arg2)
+					        { // leaving textfield in row r and column c
+					        	TextField t = (TextField)((ReadOnlyProperty<Boolean>) arg0).getBean();
+					        	int r = t.getId().charAt(2) - 48;
+					        	int c = t.getId().charAt(3) - 48;
+					        	tfExit(r,c);
+					        }
+						}
+					});
 				}
 				
 				gpBase.add(newField, j, i);  // column=i row=j
@@ -70,7 +85,6 @@ public class MainController {
 		int[][] state = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
 		str8t = new Str8t(6, m, state);
 		initGrid(6);
-		System.out.println("go!");
 	}
 	
 	/*
@@ -78,27 +92,27 @@ public class MainController {
 	 * just one number: enter it
 	 * several: -> notes
 	 */
-	public void tfExit() {
+	public void tfExit(int i, int j) {
 		
-		int i = 0;
-		int j = 2;
 		TextField tf = gridTf[i][j]; //todo get current field
 		
-		// more than one number entered
-		if (tf.getText().length() > 1) {
-			str8t.updateNotes(i, j, tf.getText());
-			tf.getStyleClass().add("notes");
-			tf.setText(str8t.getNotesString(i, j));
-			str8t.enterNumber(i, j, 0);
-		} else {
-			if (Character.isDigit(tf.getText().toCharArray()[0])) {
-				tf.getStyleClass().remove("notes");
-				if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
+		if (!tf.getText().equals("")) {
+			// more than one number entered
+			if (tf.getText().length() > 1) {
+				str8t.updateNotes(i, j, tf.getText());
+				tf.getStyleClass().add("notes");
+				tf.setText(str8t.getNotesString(i, j));
+				str8t.enterNumber(i, j, 0);
+			} else {
+				if (Character.isDigit(tf.getText().toCharArray()[0])) {
+					tf.getStyleClass().remove("notes");
+					if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
+						tf.setText("");
+					}
+					str8t.print();
+				} else {
 					tf.setText("");
 				}
-				str8t.print();
-			} else {
-				tf.setText("");
 			}
 		}
 	}
