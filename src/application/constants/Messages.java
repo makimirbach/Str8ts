@@ -1,4 +1,4 @@
-package application.Constants;
+package application.constants;
 
 public class Messages {
 	

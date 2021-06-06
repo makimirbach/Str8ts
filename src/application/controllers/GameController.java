@@ -1,59 +1,45 @@
-package application;
+package application.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import application.Constants.GameState;
-import application.Constants.Messages;
+import application.Str8t;
+import application.constants.GameState;
+import application.listener.IGameOverListener;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-public class MainController implements Initializable {
+public class GameController implements Initializable{
 	@FXML
-	private GridPane gpBase;
-	
-	@FXML
-	private TextField[][] gridTf;
+	public GridPane gpBase;
 	
 	@FXML
-	private ComboBox<Integer> cbSize;
-	ObservableList<Integer> lstSizes = FXCollections.observableArrayList(6);
+	public TextField[][] gridTf;
 	
-	@FXML
-	private Label lblMain;
-	private Str8t str8t;
+	public Str8t str8t;
 	
-	@FXML
-	private Button btnHelp;
-	@FXML
-	private Button btnStart;
+	public boolean showCorrect;
 	
-	@FXML
-	private CheckBox checkHints;
+	public  GameState state = GameState.BEFORE;
 	
-	private boolean showCorrect;
+	private IGameOverListener gameOverListener;
 	
-	private GameState state = GameState.BEFORE;
+	public void setGameOverListener(IGameOverListener gameOverListener) {
+		this.gameOverListener = gameOverListener;
+	}
 	
-	
-	
-	
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+	}	
 	
 	/*
 	 * init n x n- grid layout of labels
@@ -82,6 +68,7 @@ public class MainController implements Initializable {
 			
 				// paint black cells
 				if (str8t.getSolution()[i][j] <= 0) {
+					System.out.println("blocked " + i + j);
 					newField.getStyleClass().addAll("blocked-black", "blocked");
 					// white numbers on black cells
 					if (str8t.getSolution()[i][j] < 0) newField.setText(Integer.toString(str8t.getState()[i][j]));
@@ -89,6 +76,7 @@ public class MainController implements Initializable {
 				}
 				// black numbers on white cells from state
 				else if (str8t.getState()[i][j] != 0) {
+					System.out.println("white blocked " + i + j);
 					newField.setText(Integer.toString(str8t.getState()[i][j]));
 					newField.getStyleClass().addAll("blocked-white", "blocked");
 					newField.setEditable(false);
@@ -115,27 +103,6 @@ public class MainController implements Initializable {
 			}
 		}
 	}
-	
-	public void startGame(int n) {
-
-		if (state == GameState.BEFORE) {
-			gpBase.setVisible(true);
-			showCorrect = false;
-			cbSize.setVisible(false);
-			lblMain.setVisible(false);
-			btnStart.setVisible(false);
-			checkHints.setVisible(true);
-			checkHints.setText(Messages.HINTS);
-			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
-			//int[][] s = {{4,6,5,0,1,2},{5,4,6,3,2,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{2,3,1,6,5,4},{3,2,0,5,4,0}};
-			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
-			str8t = new Str8t(n, m, s);
-			initGrid(n);
-			state = GameState.PLAYING;
-		}
-		
-	}
-	
 	/*
 	 * handle exiting cell after writing numbers
 	 * just one number: enter it
@@ -168,70 +135,9 @@ public class MainController implements Initializable {
 			} else str8t.enterNumber(i, j, 0);
 			
 			if (str8t.gameOver()) {
-				gameOver();
+				this.gameOverListener.onGameOver();
 				
 			}
-		}
-	}
-	/*
-	 * init layout
-	 */
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		cbSize.setItems(lstSizes);
-		cbSize.setPromptText(Messages.CHOOSE_SIZE);
-		btnStart.setText(Messages.CLICK_START);
-		state = GameState.BEFORE;
-		init();	
-	}
-	
-	public void init() {
-		if (state != GameState.BEFORE) {
-			gpBase.setVisible(false);
-			cbSize.setVisible(true);
-			lblMain.setVisible(true);
-			btnStart.setVisible(true);
-			state = GameState.BEFORE;
-		}
-		lblMain.setText(Messages.START_GAME);
-		checkHints.setVisible(false);
-	}
-	/*
-	 * very beginning: user chooses size
-	 */
-	public void clickStart(ActionEvent event) {
-		
-		if (!cbSize.getSelectionModel().isEmpty()) startGame(cbSize.getValue());
-		else System.out.println("nah");
-		
-	}
-	/*
-	 * mouse hover on help button
-	 */
-	public void showHelpTip() {
-		btnHelp.setTooltip(new Tooltip(Messages.HELP_MENU));
-	}
-	/*
-	 * click on help button
-	 */
-	public void showHelp() {
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-	    alert.setTitle(Messages.HELP_MENU);
-	    alert.setHeaderText(Messages.RULES_HEADER);
-	    alert.setContentText(Messages.RULES);
-	    alert.showAndWait();
-	    
-	}
-	/*
-	 * click on checkbox 'hints'
-	 */
-	public void handleCheckHints() {
-		if (checkHints.isSelected()) {
-			showCurrentCorrect();
-			showCorrect = true;
-		} else {
-			unshowCorrect();
-			showCorrect = false;
 		}
 	}
 	
@@ -275,18 +181,6 @@ public class MainController implements Initializable {
 			}
 		}
 	}
-	
-	public void gameOver() {
-		if (state != GameState.AFTER) {
-			state = GameState.AFTER;
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		    alert.setTitle(Messages.OVER_MENU);
-		    alert.setHeaderText(Messages.OVER_HEADER);
-		    alert.setContentText(Messages.GAME_OVER);
-		    alert.setOnHidden(e -> init());
-		    alert.show();
-		}
-	    
-	}
-	
+
+
 }

@@ -5,4 +5,5 @@ module Str8ts {
 	requires javafx.base;
 	
 	opens application to javafx.graphics, javafx.fxml;
+	opens application.controllers to javafx.fxml;
 }
