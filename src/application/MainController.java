@@ -1,22 +1,41 @@
 package application;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import application.Constants.GameState;
+import application.Constants.Messages;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-public class MainController {
+public class MainController implements Initializable {
 	@FXML
 	private GridPane gpBase;
 	
 	@FXML
 	private TextField[][] gridTf;
 	
+	@FXML
+	private ComboBox<Integer> cbSize;
+	ObservableList<Integer> lstSizes = FXCollections.observableArrayList(6);
+	
+	@FXML
+	private Label lblMain;
 	private Str8t str8t;
+	
+	private GameState state = GameState.BEFORE;
 	
 	
 	
@@ -79,12 +98,16 @@ public class MainController {
 		}
 	}
 	
-	public void startGame() {
+	public void startGame(int n) {
+
+		if (state == GameState.BEFORE) {
+			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
+			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
+			str8t = new Str8t(n, m, s);
+			initGrid(n);
+			state = GameState.PLAYING;
+		}
 		
-		int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
-		int[][] state = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
-		str8t = new Str8t(6, m, state);
-		initGrid(6);
 	}
 	
 	/*
@@ -115,11 +138,24 @@ public class MainController {
 				}
 			}
 		}
+		
+		if (str8t.gameOver()) {
+			state = GameState.AFTER;
+		}
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		cbSize.setItems(lstSizes);
+		cbSize.setPromptText(Messages.CHOOSE_SIZE);
+		lblMain.setText(Messages.START_GAME);
 	}
 	
-	public void writeTest() {
+	public void comboSizeChanged(ActionEvent event) {
 		
-		String t = gridTf[0][1].getText();
-		System.out.println(t);
+		startGame(cbSize.getValue());
+		cbSize.setVisible(false);
+		lblMain.setVisible(false);
 	}
+	
 }

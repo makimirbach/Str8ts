@@ -184,9 +184,7 @@ public class Str8t {
 		for (char x: note.toCharArray()) {
 			if (Character.isDigit(x)) {
 				int t = Integer.parseInt(String.valueOf(x));
-				if (t > 0 && t <= this.n && !noteList.contains(t)) {
-					noteList.add(t);
-				}
+				if (t > 0 && t <= this.n && !noteList.contains(t))	noteList.add(t);
 			}
 		}
 		Collections.sort(noteList);
@@ -226,6 +224,15 @@ public class Str8t {
 			s+= Integer.toString(i);
 		}
 		return s;
+	}
+	
+	public boolean gameOver() {
+		for (int i = 0; i < this.n; i++) {
+			for (int j = 0; j < this.n; j++) {
+				if (this.solution[i][j] > 0 && this.state[i][j] != this.solution[i][j] ) return false;
+			}
+		}
+		return true;
 	}
 	
 }
