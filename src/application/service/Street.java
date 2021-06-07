@@ -79,4 +79,9 @@ public class Street {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "Street: entered:" + this.entered + ", unentered:" + this.unentered + ", min: " + this.min + ", max: " + this.max;
+	}
+	
 }

@@ -97,6 +97,11 @@ public class Cell {
 		return false;
 	}
 	
+	@Override
+	public String toString() {
+		return "Cell: entry: " + this.entry + ", position " + this.x + ", " +this.y + ", type: " + this.cellType;
+	}
+	
 	
 	
 }
