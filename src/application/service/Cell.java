@@ -20,7 +20,6 @@ public class Cell {
 		setStreets(streets);
 		setEntry(entry);
 		setCellType(cellType);
-		setNotes(notes);
 	}
 	public int getX() {
 		return x;
@@ -85,6 +84,9 @@ public class Cell {
 	}
 	
 
+	/*
+	 * try to enter number x here
+	 */
 	public boolean enterNumber(int x, int n) {
 		int newState = this.entry;
 		if (x > 0 && x <= n) {

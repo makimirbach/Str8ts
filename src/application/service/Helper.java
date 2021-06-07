@@ -29,6 +29,17 @@ public class Helper {
 	}
 	
 	/*
+	 * convert ArrayList of Streets to array of Streets
+	 */
+	public static Street[] streetListToArray(ArrayList<Street> l) {
+		Street[] a = new Street[l.size()];
+		for (int i = 0; i < l.size(); i++) {
+			a[i] = l.get(i);
+		}
+		return a;
+	}
+	
+	/*
 	 * get array of entries from array of cells
 	 */
 	public static int[] getEntries(Cell[] cells) {

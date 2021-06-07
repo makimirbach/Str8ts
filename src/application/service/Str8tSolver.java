@@ -11,64 +11,45 @@ public class Str8tSolver {
 	private Cell[][] state;
 	private Cell[][] solution;
 	private int n;
+	private LinkedList<Street> streets;
 	
 	
 	public Str8tSolver(Cell[][] state, Cell[][] solution, int n) {
 		this.state = state;
 		this.solution = solution;
 		this.n = n;
+		for (Cell[] cells: this.state) {
+			for (Cell c: cells)	{
+				c.setStreets(cellInStreets(c));
+			}
+		}
 	}
 	
-
 	public Cell[][] getState() {
 		return state;
 	}
-
-
 	public void setState(Cell[][] state) {
 		this.state = state;
 	}
-
-
 	public Cell[][] getSolution() {
 		return solution;
 	}
-
-
 	public void setSolution(Cell[][] solution) {
 		this.solution = solution;
 	}
-
-
 	public int getN() {
 		return n;
 	}
-
-
 	public void setN(int n) {
 		this.n = n;
 	}
-
-
-	/*
-	 * check if str8t s is (uniquely) solvable i.e. contains only consecutive numbers
-	 */
-	public Solvability checkStr8t(int[] s) {
-		int min = Helper.getRealMin(s); // smallest number > 0 
-		int max = Helper.getMax(s); 
-		
-		if (max == 0) return Solvability.SOLVABLE; // nothing entered yet
-		
-		if (max-min+1 > s.length) {
-			return Solvability.UNSOLVABLE;
-		} else {
-			int entered = Helper.getEntered(s); // > 0
-			int unentered = s.length - entered; //  number of zeros in s
-			// uniquely when all entered or only one missing and only one choice left
-			if (unentered == 0 || (unentered == 1 && (min == 1 || max == this.n || max-min+1 == s.length))) return Solvability.UNIQUELY_SOLVABLE;
-			else return Solvability.SOLVABLE;
-		}
+	public LinkedList<Street> getStreets() {
+		return streets;
 	}
+	public void setStreets(LinkedList<Street> streets) {
+		this.streets = streets;
+	}
+
 	
 	/*
 	 * check if row does not contain duplicates
@@ -106,13 +87,46 @@ public class Str8tSolver {
 		return true;
 	}
 	
-	
-	
+	public LinkedList<Street> getAllStreets() {
+		LinkedList<Street> streets = new LinkedList<Street>();
+		LinkedList<Cell> streetCells = new LinkedList<Cell>();
+		
+		
+		for (int i = 0; i < this.n; i++) {
+			// horizontal
+			for (int j = 0; j < this.n; j++) {
+				Cell currentCell = this.state[i][j];
+				if (currentCell.getCellType() == CellType.WHITE) {
+					streetCells.add(currentCell);
+				} else if (streetCells.size() > 0) {
+					streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+					streetCells.clear();
+				}
+			}
+			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+			streetCells.clear();
+			
+			// vertical
+			for (int j = 0; j < this.n; j++) {
+				Cell currentCell = this.state[j][i];
+				if (currentCell.getCellType() == CellType.WHITE) {
+					streetCells.add(currentCell);
+				} else if (streetCells.size() > 0) {
+					streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+					streetCells.clear();
+				}
+			}
+			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+			streetCells.clear();
+		}
+		
+		return streets;
+	}
 	
 	/*
 	 * get list of streets a cell is contained in
 	 */
-	public ArrayList<Street> cellInStreets(Cell cell) {
+	public Street[] cellInStreets(Cell cell) {
 		ArrayList<Street> streets = new ArrayList<Street>();
 		LinkedList<Cell> streetCells = new LinkedList<Cell>();
 		
@@ -164,85 +178,9 @@ public class Str8tSolver {
 		streetCells.clear();
 		// vertical
 		
-		
-		return streets;
-		
+		return Helper.streetListToArray(streets);
 	}
-	/*
-	 * check state-matrix: is it (uniquely) solvable? 
-	 */
-	public Solvability checkValidState() {
-		/*
-		 * check duplicates
-		 */
-		for (int i = 0; i < this.n; i++) {
-			if (!checkDuplicatesRow(i)) {
-				System.out.println("found duplicates in row " +i); 
-				return Solvability.UNSOLVABLE;
-			}
-			if (!checkDuplicatesColumn(i)) {
-				System.out.println("found duplicates in column " +i);
-				return Solvability.UNSOLVABLE;
-			}
-		}
-		/* 
-		 * check str8ts row by row / column by column
-		 */
-		boolean unique = true;
-		for (int i = 0; i < this.n; i++) {
-			ArrayList<Integer> s = new ArrayList<Integer>();
-			
-			// check rows
-			for (int j = 0; j < this.n; j++) {
-				// black field
-				if (this.solution[i][j].getEntry() <= 0) {
-					if (s.size()> 1) {
-						Solvability solvable = checkStr8t(Helper.listToArray(s));
-						if (solvable == Solvability.UNSOLVABLE) {
-							System.out.println("invalid str8 in row " +i);
-							return Solvability.UNSOLVABLE;
-						} else if(solvable == Solvability.SOLVABLE) unique = false;
-					}
-					s.clear();
-				} else {
-					// not zero here and white cell
-					s.add(this.state[i][j].getEntry()); // add last
-				}
-			}
-			if (s.size()> 1) {
-				Solvability solvable = checkStr8t(Helper.listToArray(s));
-				if (solvable == Solvability.UNSOLVABLE) {
-					System.out.println("invalid s in row " +i);
-					return Solvability.UNSOLVABLE;
-				} else if(solvable == Solvability.SOLVABLE) unique = false;
-			}
-			s.clear();
-			// check columns
-			for (int j = 0; j < this.n; j++) {
-				// black cell
-				if (this.solution[j][i].getEntry() <= 0) {
-					if (s.size()> 1) {
-						Solvability solvable = checkStr8t(Helper.listToArray(s));
-						if (solvable == Solvability.UNSOLVABLE) {
-							System.out.println("invalid in col " +i);
-							return Solvability.UNSOLVABLE;
-						} else if(solvable == Solvability.SOLVABLE) unique = false;
-					}
-					s.clear();
-				} else {
-					// not zero here and white cell
-					s.add(this.state[j][i].getEntry());
-				}
-			}
-			if (s.size()> 1) {
-				Solvability solvable = checkStr8t(Helper.listToArray(s));
-				if (solvable == Solvability.UNSOLVABLE) {
-					System.out.println("invalid " +i);
-					return Solvability.UNSOLVABLE;
-				} else if(solvable == Solvability.SOLVABLE) unique = false;
-			}
-			s.clear();
-		}
-		return ((unique) ? Solvability.UNIQUELY_SOLVABLE: Solvability.SOLVABLE);
-	}
+	
+
+	
 }
