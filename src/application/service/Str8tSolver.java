@@ -1,12 +1,11 @@
 package application.service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import application.constants.Solvability;
 
 public class Str8tSolver {
-	private LinkedList<Entry> llstSolution = new LinkedList<Entry>();
+	//private LinkedList<Entry> llstSolution = new LinkedList<Entry>();
 	private int[][] state;
 	private int[][] solution;
 	private int n;
@@ -93,10 +92,10 @@ public class Str8tSolver {
 		/* 
 		 * check str8ts row by row / column by column
 		 */
-		
+		boolean unique = true;
 		for (int i = 0; i < this.n; i++) {
 			ArrayList<Integer> s = new ArrayList<Integer>();
-			boolean unique = true;
+			
 			// check rows
 			for (int j = 0; j < this.n; j++) {
 				// black field
@@ -148,6 +147,6 @@ public class Str8tSolver {
 			}
 			s.clear();
 		}
-		return Solvability.SOLVABLE;
+		return ((unique) ? Solvability.UNIQUELY_SOLVABLE: Solvability.SOLVABLE);
 	}
 }

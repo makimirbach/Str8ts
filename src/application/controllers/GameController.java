@@ -67,17 +67,17 @@ public class GameController implements Initializable{
 				newField.setMaxSize(cellMeasure, cellMeasure);
 			
 				// paint black cells
-				if (str8t.getSolution()[i][j] <= 0) {
-					System.out.println("blocked " + i + j);
+				if (str8t.getSolution()[i][j].getEntry() <= 0) {
+					
 					newField.getStyleClass().addAll("blocked-black", "blocked");
 					// white numbers on black cells
-					if (str8t.getSolution()[i][j] < 0) newField.setText(Integer.toString(str8t.getState()[i][j]));
+					if (str8t.getSolution()[i][j].getEntry() < 0) newField.setText(Integer.toString(str8t.getState()[i][j].getEntry()));
 					newField.setEditable(false);
 				}
 				// black numbers on white cells from state
-				else if (str8t.getState()[i][j] != 0) {
-					System.out.println("white blocked " + i + j);
-					newField.setText(Integer.toString(str8t.getState()[i][j]));
+				else if (str8t.getState()[i][j].getEntry() != 0) {
+					
+					newField.setText(Integer.toString(str8t.getState()[i][j].getEntry()));
 					newField.getStyleClass().addAll("blocked-white", "blocked");
 					newField.setEditable(false);
 					//newField.setDisable(true); // makes it gray. When do numbers get small by clicking on them??
@@ -115,15 +115,15 @@ public class GameController implements Initializable{
 			if (!tf.getText().equals("")) {
 				// more than one number entered
 				if (tf.getText().length() > 1) {
-					str8t.updateNotes(i, j, tf.getText());
+					str8t.getState()[i][j].updateNotes(tf.getText(), str8t.getN());
 					tf.getStyleClass().add("notes");
 					if (showCorrect) unshowThisCorrect(i,j);
-					tf.setText(str8t.getNotesString(i, j));
-					str8t.enterNumber(i, j, 0);
+					tf.setText(str8t.getState()[i][j].getNotesString());
+					str8t.getState()[i][j].enterNumber(0, str8t.getN());
 				} else {
 					if (Character.isDigit(tf.getText().toCharArray()[0])) {
 						tf.getStyleClass().remove("notes");
-						if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
+						if (!str8t.getState()[i][j].enterNumber(Integer.valueOf(tf.getText()), str8t.getN())) {
 							tf.setText("");
 						} else {
 							if (showCorrect) showThisCorrect(i,j);
@@ -131,11 +131,12 @@ public class GameController implements Initializable{
 						str8t.print();
 					} else {
 						tf.setText("");
-						str8t.enterNumber(i, j, 0);
+						str8t.getState()[i][j].enterNumber(0, str8t.getN());
+						
 					}
 				}
 				
-			} else str8t.enterNumber(i, j, 0);
+			} else str8t.getState()[i][j].enterNumber(0, str8t.getN());
 			
 			if (str8t.gameOver()) {
 				this.gameListener.onGameOver();
@@ -170,7 +171,7 @@ public class GameController implements Initializable{
 	public void showCurrentCorrect() {
 		for (int i = 0; i < str8t.getN(); i++) {
 			for (int j = 0; j< str8t.getN(); j++) {
-				if (!gridTf[i][j].getStyleClass().contains("blocked") && str8t.getState()[i][j] != 0) {
+				if (!gridTf[i][j].getStyleClass().contains("blocked") && str8t.getState()[i][j].getEntry() != 0) {
 						if (str8t.checkNumberCorrect(i, j)) {
 						//correct and none of the initially displayed numbers
 						 gridTf[i][j].getStyleClass().add("correct");

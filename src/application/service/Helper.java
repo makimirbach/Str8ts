@@ -2,6 +2,8 @@ package application.service;
 
 import java.util.ArrayList;
 
+import application.constants.CellType;
+
 public class Helper {
 	/*
 	 * convert ArrayList of Integers to array of ints
@@ -12,6 +14,17 @@ public class Helper {
 			a[i] = l.get(i);
 		}
 		return a;
+	}
+	
+	/*
+	 * get array of entries from array of cells
+	 */
+	public static int[] getEntries(Cell[] cells) {
+		int[] entries = new int[cells.length];
+		for (int i = 0; i < cells.length; i++) {
+			entries[i] = cells[i].getEntry();
+		}
+		return entries;
 	}
 	
 	/*
@@ -52,4 +65,15 @@ public class Helper {
 		return count;
 	}
 	
+	public static Cell[][] cellMatrixFromEntries(int[][] state) {
+		Cell[][] cells = new Cell[state.length][state.length];
+		
+		for (int i = 0; i < state.length; i++) {
+			for (int j = 0; j < state.length; j++) {
+				cells[i][j] = new Cell(i,j, new Street[0], state[i][j], CellType.WHITE);
+			}
+		}
+		
+		return cells;
+	}
 }

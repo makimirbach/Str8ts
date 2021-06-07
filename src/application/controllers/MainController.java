@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import application.constants.GameState;
 import application.constants.Messages;
 import application.listeners.IGameListener;
+import application.service.Helper;
 import application.service.Str8t;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -64,7 +65,7 @@ public class MainController implements Initializable, IGameListener {
 			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
 			//int[][] s = {{4,6,5,0,1,2},{5,4,6,3,2,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{2,3,1,6,5,4},{3,2,0,5,4,0}};
 			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
-			gameController.str8t = new Str8t(n, m, s);
+			gameController.str8t = new Str8t(n, Helper.cellMatrixFromEntries(m), Helper.cellMatrixFromEntries(s));
 			gameController.initGrid(n);
 			gameController.state = GameState.PLAYING;
 		}
