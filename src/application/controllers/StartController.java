@@ -14,9 +14,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 
 public class StartController implements Initializable {
 
+	@FXML
+	private AnchorPane start;
 	
 	@FXML
 	private ComboBox<Integer> cbSize;
@@ -48,21 +51,17 @@ public class StartController implements Initializable {
 		this.gameStartListener = gameStartListener;
 	}
 
-	private void init() {
+	public void init() {
 		
 		cbSize.setItems(lstSizes);
 		cbSize.setPromptText(Messages.CHOOSE_SIZE);
 		btnStart.setText(Messages.CLICK_START);
-		cbSize.setVisible(true);
-		lblMain.setVisible(true);
-		btnStart.setVisible(true);
+		start.setVisible(true);
 		lblMain.setText(Messages.START_GAME);
 	}
 	
 	public void closeStart() {
-		cbSize.setVisible(false);
-		lblMain.setVisible(false);
-		btnStart.setVisible(false);
+		start.setVisible(false);;
 	}
 	
 	/*

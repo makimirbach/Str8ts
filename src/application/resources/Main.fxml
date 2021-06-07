@@ -16,8 +16,8 @@
          <font>
             <Font size="18.0" />
          </font></CheckBox>
-      <fx:include fx:id="start" layoutX="100.0" layoutY="200.0" source="StartPane.fxml" />
       <fx:include fx:id="game" source="Game.fxml" />
+      <fx:include fx:id="start" layoutX="100.0" layoutY="200.0" source="StartPane.fxml" />
       
    </children>
 </AnchorPane>

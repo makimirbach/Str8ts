@@ -47,8 +47,8 @@ public class MainController implements Initializable, IGameOverListener, IGameSt
 	public void init() {
 		if (gameController.state != GameState.BEFORE) {
 			gameController.gpBase.setVisible(false);
-			
 			gameController.state = GameState.BEFORE;
+			startController.init();
 		}
 		
 		checkHints.setVisible(false);

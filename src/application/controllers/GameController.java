@@ -117,6 +117,7 @@ public class GameController implements Initializable{
 				if (tf.getText().length() > 1) {
 					str8t.updateNotes(i, j, tf.getText());
 					tf.getStyleClass().add("notes");
+					if (showCorrect) unshowThisCorrect(i,j);
 					tf.setText(str8t.getNotesString(i, j));
 					str8t.enterNumber(i, j, 0);
 				} else {
@@ -124,6 +125,8 @@ public class GameController implements Initializable{
 						tf.getStyleClass().remove("notes");
 						if (!str8t.enterNumber(i, j, Integer.valueOf(tf.getText()))) {
 							tf.setText("");
+						} else {
+							if (showCorrect) showThisCorrect(i,j);
 						}
 						str8t.print();
 					} else {
@@ -131,7 +134,7 @@ public class GameController implements Initializable{
 						str8t.enterNumber(i, j, 0);
 					}
 				}
-				if (showCorrect) showThisCorrect(i,j);
+				
 			} else str8t.enterNumber(i, j, 0);
 			
 			if (str8t.gameOver()) {
@@ -152,6 +155,13 @@ public class GameController implements Initializable{
 			gridTf[i][j].getStyleClass().remove("correct");
 			gridTf[i][j].getStyleClass().add("false");
 		}
+	}
+	
+	/*
+	 * uncolor this one entry
+	 */
+	public void unshowThisCorrect(int i,int j) {
+		gridTf[i][j].getStyleClass().removeAll("false", "correct");
 	}
 	
 	/*
