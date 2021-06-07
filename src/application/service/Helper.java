@@ -1,6 +1,7 @@
 package application.service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import application.constants.CellType;
 
@@ -10,6 +11,17 @@ public class Helper {
 	 */
 	public static int[] listToArray(ArrayList<Integer> l) {
 		int[] a = new int[l.size()];
+		for (int i = 0; i < l.size(); i++) {
+			a[i] = l.get(i);
+		}
+		return a;
+	}
+	
+	/*
+	 * convert LinkedList of Cells to array of Cells
+	 */
+	public static Cell[] cellListToArray(LinkedList<Cell> l) {
+		Cell[] a = new Cell[l.size()];
 		for (int i = 0; i < l.size(); i++) {
 			a[i] = l.get(i);
 		}
@@ -31,6 +43,7 @@ public class Helper {
 	 * get max elt > 0 from an array
 	 */
 	public static int getMax(int[] a) {
+		if (a.length == 0) return 0;
 		int maxValue = a[0];
 		for (int i = 1; i < a.length; i++) {
 			if (a[i] > maxValue) {
@@ -65,12 +78,12 @@ public class Helper {
 		return count;
 	}
 	
-	public static Cell[][] cellMatrixFromEntries(int[][] state) {
+	public static Cell[][] cellMatrixFromEntries(int[][] state, int[][] solution) {
 		Cell[][] cells = new Cell[state.length][state.length];
 		
 		for (int i = 0; i < state.length; i++) {
 			for (int j = 0; j < state.length; j++) {
-				cells[i][j] = new Cell(i,j, new Street[0], state[i][j], CellType.WHITE);
+				cells[i][j] = new Cell(i,j, new Street[0], state[i][j], (solution[i][j] > 0) ? CellType.WHITE: CellType.BLACK);
 			}
 		}
 		

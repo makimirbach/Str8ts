@@ -46,8 +46,6 @@ public class Str8t {
 	}
 	
 	
-	
-	
 	public boolean gameOver() {
 		for (int i = 0; i < this.n; i++) {
 			for (int j = 0; j < this.n; j++) {
