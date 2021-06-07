@@ -1,6 +1,5 @@
 package application;
 	
-import application.service.Str8t;
 import application.service.Str8tSolver;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

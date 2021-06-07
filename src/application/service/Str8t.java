@@ -59,7 +59,7 @@ public class Str8t {
 	
 	// TODO
 	public boolean checkNumberCorrect(int r, int c) {
-		if ((this.state[r][c] == this.solution[r][c] && this.state[r][c].getEntry() != 0) || this.solution[r][c].getEntry() < 0) return true;
+		if ((this.state[r][c].getEntry() == this.solution[r][c].getEntry() && this.state[r][c].getEntry() != 0) || this.solution[r][c].getEntry() < 0) return true;
 		return false;
 	}
 	
