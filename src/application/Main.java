@@ -1,5 +1,7 @@
 package application;
 	
+import application.service.Str8t;
+import application.service.Str8tSolver;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -24,6 +26,14 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		launch(args);
+		//launch(args);
+		int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
+		int[][] state = {{4,6,3,0,1,2},{5,4,6,3,2,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{2,3,1,6,5,4},{3,2,0,5,4,0}};
+		//int[][] state = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
+		Str8tSolver str8t = new Str8tSolver(state, m, 6);
+		int[] s0 = {0,0,0};
+		int[] s1 = {2,1,0};
+		
+		System.out.println(str8t.checkValidState());
 	}
 }
