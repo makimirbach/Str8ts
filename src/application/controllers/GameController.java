@@ -3,9 +3,9 @@ package application.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import application.Str8t;
 import application.constants.GameState;
 import application.listener.IGameOverListener;
+import application.service.Str8t;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
