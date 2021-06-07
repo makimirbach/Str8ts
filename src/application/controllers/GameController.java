@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.constants.GameState;
-import application.listener.IGameOverListener;
+import application.listeners.IGameListener;
 import application.service.Str8t;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
@@ -29,10 +29,10 @@ public class GameController implements Initializable{
 	
 	public  GameState state = GameState.BEFORE;
 	
-	private IGameOverListener gameOverListener;
+	private IGameListener gameListener;
 	
-	public void setGameOverListener(IGameOverListener gameOverListener) {
-		this.gameOverListener = gameOverListener;
+	public void setGameListener(IGameListener gameListener) {
+		this.gameListener = gameListener;
 	}
 	
 
@@ -138,7 +138,7 @@ public class GameController implements Initializable{
 			} else str8t.enterNumber(i, j, 0);
 			
 			if (str8t.gameOver()) {
-				this.gameOverListener.onGameOver();
+				this.gameListener.onGameOver();
 				
 			}
 		}

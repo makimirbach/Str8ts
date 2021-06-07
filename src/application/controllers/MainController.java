@@ -5,8 +5,8 @@ import java.util.ResourceBundle;
 
 import application.constants.GameState;
 import application.constants.Messages;
-import application.listener.IGameOverListener;
-import application.listener.IGameStartListener;
+import application.listeners.IGameListener;
+import application.listeners.IGameStartListener;
 import application.service.Str8t;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 
-public class MainController implements Initializable, IGameOverListener, IGameStartListener {
+public class MainController implements Initializable, IGameListener {
 	
 	@FXML 
 	private GameController gameController;
@@ -37,9 +37,9 @@ public class MainController implements Initializable, IGameOverListener, IGameSt
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
 		gameController.state = GameState.BEFORE;
-		gameController.setGameOverListener(this);
+		gameController.setGameListener(this);
 		
-		startController.setGameStartListener(this);
+		startController.setGameListener(this);
 		init();	
 	}
 	

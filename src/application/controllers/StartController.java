@@ -4,8 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.constants.Messages;
-import application.listener.IGameOverListener;
-import application.listener.IGameStartListener;
+import application.listeners.IGameListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,7 +36,7 @@ public class StartController implements Initializable {
 		return this.n;
 	}
 	
-	private IGameStartListener gameStartListener;
+	private IGameListener gameListener;
 	
 	
 	
@@ -47,8 +46,8 @@ public class StartController implements Initializable {
 		
 	} 
 	
-	public void setGameStartListener(IGameStartListener gameStartListener) {
-		this.gameStartListener = gameStartListener;
+	public void setGameListener(IGameListener gameListener) {
+		this.gameListener = gameListener;
 	}
 
 	public void init() {
@@ -71,7 +70,7 @@ public class StartController implements Initializable {
 		
 		if (!cbSize.getSelectionModel().isEmpty()) {
 			this.n = cbSize.getValue();
-			this.gameStartListener.onGameStart();
+			this.gameListener.onGameStart();
 		}
 		else System.out.println("nah");
 		
