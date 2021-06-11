@@ -12,9 +12,10 @@ public class Street {
 	
 	private Cell[] state;
 	
-	private ArrayList<Integer> missing;
-	private ArrayList<Integer> possible;
-	private ArrayList<Integer> blocked;
+	private ArrayList<Integer> missing; // for sure
+	private ArrayList<Integer> possible; 
+	private ArrayList<Integer> blocked; 
+	
 	public Street(Cell[] state, int n, boolean horizontal) {
 		setState(state);
 		setN(n);
@@ -80,6 +81,14 @@ public class Street {
 	
 	
 	
+	public ArrayList<Integer> getEntries() {
+		ArrayList<Integer> entries = new ArrayList<Integer>();
+		for (Cell c: this.state) {
+			if (c.getEntry()!= 0) entries.add(c.getEntry());
+		}
+		return entries;
+	}
+	
 	public boolean isHorizontal() {
 		return horizontal;
 	}
@@ -135,7 +144,7 @@ public class Street {
 			if (this.getMax() - this.getMin() + 1 == this.length || this.getMin() == 1 || this.getMax() == this.n) {
 				// exakt set of all numbers know
 				int min = getMin();
-				if (this.getMax() == n) min = (min > 0 && min < this.getMax()) ? min : this.getMax() - this.length + 1;
+				if (this.getMax() == n) min = (min > 0 && min  == this.getMax() - this.length + 1) ? min : this.getMax() - this.length + 1;
 
 				boolean[] enteredNumbers = new boolean[this.length];
 				for (Cell c: this.state) {
