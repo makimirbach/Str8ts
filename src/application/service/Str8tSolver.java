@@ -145,7 +145,7 @@ public class Str8tSolver {
 	/*
 	 * which numbers are blocked for all entrys in steet s 
 	 */
-	public ArrayList<Integer> blockedInStreet(Street s) {
+	public void blockedInStreet(Street s) {
 		int r = s.getState()[0].getX();
 		int c = s.getState()[0].getY();
 		ArrayList<Integer> blocked = new ArrayList<Integer>();
@@ -167,7 +167,7 @@ public class Str8tSolver {
 			//vertical street
 			for (int i = 0; i < this.n; i++) {
 				if (!s.containsCell(this.state[i][c])) {
-					if (this.state[i][c].getEntry() != 0) blocked.add(this.state[c][c].getEntry());
+					if (this.state[i][c].getEntry() != 0) blocked.add(this.state[i][c].getEntry());
 					if (this.state[i][c].getCellType() == CellType.WHITE) {
 						Street streets = cellInStreets(this.state[i][c])[1];
 						ArrayList<Integer> liste = streets.getMissing();
@@ -178,6 +178,7 @@ public class Str8tSolver {
 				}
 			}
 		}
-		return blocked;
+		s.setBlocked(blocked);
 	}
+	
 }

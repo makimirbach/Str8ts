@@ -14,6 +14,7 @@ public class Street {
 	
 	private ArrayList<Integer> missing;
 	private ArrayList<Integer> possible;
+	private ArrayList<Integer> blocked;
 	public Street(Cell[] state, int n, boolean horizontal) {
 		setState(state);
 		setN(n);
@@ -92,6 +93,12 @@ public class Street {
 		this.missing = missing;
 	}
 	
+	public ArrayList<Integer> getBlocked() {
+		return blocked;
+	}
+	public void setBlocked(ArrayList<Integer> blocked) {
+		this.blocked = blocked;
+	}
 	public ArrayList<Integer> getPossible() {
 		return possible;
 	}
@@ -101,19 +108,19 @@ public class Street {
 	/*
 	 * check if str8t s is (uniquely) solvable i.e. contains only consecutive numbers
 	 */
-	public Solvability checkStr8t(int[] s) {
-		int min = Helper.getRealMin(s); // smallest number > 0 
-		int max = Helper.getMax(s); 
+	public Solvability checkStr8t() {
+		int min = getMin(); // smallest number > 0 
+		int max = getMax(); 
 		
 		if (max == 0) return Solvability.SOLVABLE; // nothing entered yet
 		
-		if (max-min+1 > s.length) {
+		if (max-min+1 > this.length) {
 			return Solvability.UNSOLVABLE;
 		} else {
-			int entered = Helper.getEntered(s); // > 0
-			int unentered = s.length - entered; //  number of zeros in s
+			int entered = this.getEntered(); // > 0
+			int unentered = this.length - entered; //  number of zeros in s
 			// uniquely when all entered or only one missing and only one choice left
-			if (unentered == 0 || (unentered == 1 && (min == 1 || max == this.n || max-min+1 == s.length))) return Solvability.UNIQUELY_SOLVABLE;
+			if (unentered == 0 || (unentered == 1 && (min == 1 || max == this.n || max-min+1 == this.length))) return Solvability.UNIQUELY_SOLVABLE;
 			else return Solvability.SOLVABLE;
 		}
 	}
@@ -179,7 +186,7 @@ public class Street {
 	
 	@Override
 	public String toString() {
-		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in row " + this.getState()[0].getX() + " in column " + this.getState()[0].getY();
+		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ") blocked: " + this.getBlocked() + " missing " + this.getMissing();
 	}
 	
 	
