@@ -50,6 +50,15 @@ public class Helper {
 		return entries;
 	}
 	
+	public static String getEntriesToString(Cell[] cells) {
+		int[] entries = getEntries(cells);
+		String e = "";
+		for (int i: entries) {
+			e += Integer.toString(i);
+		}
+		return e;
+	}
+	
 	/*
 	 * get max elt > 0 from an array
 	 */

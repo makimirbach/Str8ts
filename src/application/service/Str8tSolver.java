@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import application.constants.CellType;
-import application.constants.Solvability;
 
 public class Str8tSolver {
 	//private LinkedList<Entry> llstSolution = new LinkedList<Entry>();
