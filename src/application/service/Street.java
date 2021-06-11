@@ -8,17 +8,19 @@ public class Street {
 	
 	private int n;
 	private int length;
+	private boolean horizontal;
 	
 	private Cell[] state;
 	
 	private ArrayList<Integer> missing;
-	public Street(Cell[] state, int n) {
+	private ArrayList<Integer> possible;
+	public Street(Cell[] state, int n, boolean horizontal) {
 		setState(state);
-		
-		
 		setN(n);
+		setHorizontal(horizontal);
 		setLength(state.length);
 		setMissing(new ArrayList<Integer>());
+		setPossible(new ArrayList<Integer>());
 	}
 	/*
 	 * getter & setter
@@ -77,11 +79,24 @@ public class Street {
 	
 	
 	
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+	public void setHorizontal(boolean horizontal) {
+		this.horizontal = horizontal;
+	}
 	public ArrayList<Integer> getMissing() {
 		return missing;
 	}
 	public void setMissing(ArrayList<Integer> missing) {
 		this.missing = missing;
+	}
+	
+	public ArrayList<Integer> getPossible() {
+		return possible;
+	}
+	public void setPossible(ArrayList<Integer> possible) {
+		this.possible = possible;
 	}
 	/*
 	 * check if str8t s is (uniquely) solvable i.e. contains only consecutive numbers
@@ -139,7 +154,7 @@ public class Street {
 	}
 	
 	/*
-	 * 
+	 * if only one missing and one unentered, enter it
 	 */
 	public void checkCanEnterMissing() {
 		if (this.missing.size() == 1 && this.getUnentered() == 1) {
@@ -152,11 +167,20 @@ public class Street {
 		}
 	}
 	
-	
+	/*
+	 * check if given cell is contained in this street
+	 */
+	public boolean containsCell(Cell cell) {
+		for (Cell c: this.state) {
+			if (c == cell) return true;
+		}
+		return false;
+	}
 	
 	@Override
 	public String toString() {
-		return "\nStreet: " + Helper.getEntriesToString(this.state) +  " entered:" + this.getEntered() + ", unentered:" + this.getUnentered() + ", min: " + this.getMin() + ", max: " + this.getMax();
+		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in row " + this.getState()[0].getX() + " in column " + this.getState()[0].getY();
 	}
+	
 	
 }

@@ -17,6 +17,7 @@ public class Str8tSolver {
 		this.state = state;
 		this.solution = solution;
 		this.n = n;
+		this.streets = getAllStreets();
 		for (Cell[] cells: this.state) {
 			for (Cell c: cells)	{
 				c.setStreets(cellInStreets(c));
@@ -86,6 +87,9 @@ public class Str8tSolver {
 		return true;
 	}
 	
+	/*
+	 * init: get all streets from initial state
+	 */
 	public LinkedList<Street> getAllStreets() {
 		LinkedList<Street> streets = new LinkedList<Street>();
 		LinkedList<Cell> streetCells = new LinkedList<Cell>();
@@ -98,11 +102,11 @@ public class Str8tSolver {
 				if (currentCell.getCellType() == CellType.WHITE) {
 					streetCells.add(currentCell);
 				} else if (streetCells.size() > 0) {
-					streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+					streets.add(new Street(Helper.cellListToArray(streetCells), this.n, true));
 					streetCells.clear();
 				}
 			}
-			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n, true));
 			streetCells.clear();
 			
 			// vertical
@@ -111,11 +115,11 @@ public class Str8tSolver {
 				if (currentCell.getCellType() == CellType.WHITE) {
 					streetCells.add(currentCell);
 				} else if (streetCells.size() > 0) {
-					streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+					streets.add(new Street(Helper.cellListToArray(streetCells), this.n, false));
 					streetCells.clear();
 				}
 			}
-			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
+			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n, false));
 			streetCells.clear();
 		}
 		
@@ -126,60 +130,54 @@ public class Str8tSolver {
 	 * get list of streets a cell is contained in
 	 */
 	public Street[] cellInStreets(Cell cell) {
-		ArrayList<Street> streets = new ArrayList<Street>();
-		LinkedList<Cell> streetCells = new LinkedList<Cell>();
-		
-		// horizontal
-		// forwards
-		for (int i = 0; i < this.n; i++) {
-			if (cell.getY() + i >= 0 && cell.getY() + i < this.n) {	
-				Cell currentCell = this.state[cell.getX()][cell.getY() + i];
-				if (currentCell.getCellType() == CellType.WHITE) {
-					streetCells.add(currentCell);
-				} else break;
-			} else break;
+		Street[] t = new Street[2];
+		for (Street s: this.streets) {
+			if (s.containsCell(cell)) {
+				if (s.isHorizontal()) t[0] = s;
+				else t[1] = s;
+			}
 		}
-		// backwards
-		for (int i = 1; i < this.n; i++) {
-			if (cell.getY() - i >= 0 && cell.getY() - i < this.n) { 
-				Cell currentCell = this.state[cell.getX()][cell.getY() - i];
-				if (currentCell.getCellType() == CellType.WHITE) {
-					streetCells.push(currentCell);
-				} else break;
-			} else break;
-		}
+		return t;
 		
-		streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
-		streetCells.clear();
-		// vertical
-		
-		// down
-		for (int i = 0; i < this.n; i++) {
-			if (cell.getX() + i >= 0 && cell.getX() + i < this.n) {
-				Cell currentCell = this.state[cell.getX() + i][cell.getY()];
-				if (currentCell.getCellType() == CellType.WHITE) {
-					streetCells.add(currentCell);
-				} else break;
-			} else break;
-			
-		}
-		// backwards
-		for (int i = 1; i < this.n; i++) {
-			if (cell.getX() - i >= 0 && cell.getX() - i < this.n) {
-				Cell currentCell = this.state[cell.getX() - i][cell.getY()];
-				if (currentCell.getCellType() == CellType.WHITE) {
-					streetCells.push(currentCell);
-				} else break;
-			} else break;
-		}
-		
-		streets.add(new Street(Helper.cellListToArray(streetCells), this.n));
-		streetCells.clear();
-		// vertical
-		
-		return Helper.streetListToArray(streets);
 	}
 	
-
 	
+	/*
+	 * which numbers are blocked for all entrys in steet s 
+	 */
+	public ArrayList<Integer> blockedInStreet(Street s) {
+		int r = s.getState()[0].getX();
+		int c = s.getState()[0].getY();
+		ArrayList<Integer> blocked = new ArrayList<Integer>();
+		if (s.isHorizontal()) {
+			//horizontal street
+			for (int i = 0; i < this.n; i++) {
+				if (!s.containsCell(this.state[r][i])) {
+					if (this.state[r][i].getEntry() != 0) blocked.add(this.state[r][i].getEntry());
+					if (this.state[r][i].getCellType() == CellType.WHITE) {
+						Street streets = cellInStreets(this.state[r][i])[0];
+						ArrayList<Integer> liste = streets.getMissing();
+						for (int b: liste) {
+							if (!blocked.contains(b)) blocked.add(b);
+						}
+					}
+				}
+			} 
+		} else {
+			//vertical street
+			for (int i = 0; i < this.n; i++) {
+				if (!s.containsCell(this.state[i][c])) {
+					if (this.state[i][c].getEntry() != 0) blocked.add(this.state[c][c].getEntry());
+					if (this.state[i][c].getCellType() == CellType.WHITE) {
+						Street streets = cellInStreets(this.state[i][c])[1];
+						ArrayList<Integer> liste = streets.getMissing();
+						for (int b: liste) {
+							if (!blocked.contains(b)) blocked.add(b);
+						}
+					}
+				}
+			}
+		}
+		return blocked;
+	}
 }
