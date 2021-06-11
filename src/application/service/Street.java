@@ -195,7 +195,7 @@ public class Street {
 	
 	@Override
 	public String toString() {
-		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ") blocked: " + this.getBlocked() + " missing " + this.getMissing();
+		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ") blocked: " + this.getBlocked() + " missing " + this.getMissing() + " possible " + this.getPossible();
 	}
 	
 	

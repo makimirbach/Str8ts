@@ -207,4 +207,44 @@ public class Str8tSolver {
 		s.setBlocked(blocked);
 	}
 	
+	/*
+	   * set all possible numbers in a streets
+	   */
+	  public void possibleInStreet(Street s) {
+	    int r = s.getState()[0].getX();
+	    int c = s.getState()[0].getY();
+	    ArrayList<Integer> possible = new ArrayList<Integer>();
+	    
+	    if (s.getMax() > 0) {
+	    	if (s.getUnentered() == 1) {
+	    		if (s.getLength() > s.getMax() - s.getMin() + 1) {
+	    			if (!s.getBlocked().contains(s.getMin() - 1) && s.getMin() - 1 > 0) {
+	    				possible.add(s.getMin() - 1);
+	    			}
+	    			if (!s.getBlocked().contains(s.getMax() +1) && s.getMax() + 1 <= s.getN()) {
+	    				possible.add(s.getMax()+1);	
+	    			}
+	    			
+	    			
+	    		} else {
+	    			System.out.println("enter unique missing entry");
+	    		}
+	    	}
+	    }
+	    
+	    s.setPossible(possible);
+	    if (s.getPossible().size() == 1) {
+	    	s.setMissing(possible);
+	    }
+	  }
+	  
+	  public void printState() {
+			for (int i= 0; i < this.n; i++) {
+				for (int j = 0; j < this.n; j++) {
+					System.out.print(this.state[i][j].getEntry());
+				}
+				System.out.println();
+			}
+			System.out.println();
+		}
 }
