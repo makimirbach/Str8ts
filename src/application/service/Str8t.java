@@ -46,10 +46,11 @@ public class Str8t {
 	}
 	
 	
+	//TOdo
 	public boolean gameOver() {
 		for (int i = 0; i < this.n; i++) {
 			for (int j = 0; j < this.n; j++) {
-				if (this.solution[i][j].getEntry() > 0 && this.state[i][j] != this.solution[i][j] ) return false;
+				if (this.solution[i][j].getEntry() > 0 && this.state[i][j].getEntry() != this.solution[i][j].getEntry() ) return false;
 			}
 		}
 		return true;
