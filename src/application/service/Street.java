@@ -141,11 +141,11 @@ public class Street {
 		ArrayList<Integer> missing = new ArrayList<Integer>();
 		if (this.getMax() != 0) {
 			// something known yet
-			if (this.getMax() - this.getMin() + 1 == this.length || this.getMin() == 1 || this.getMax() == this.n) {
+			if (this.getMax() - this.getMin() + 1 == this.length || this.getMin() == 1 || this.getMax() == this.n || this.length == this.n) {
 				// exakt set of all numbers know
 				int min = getMin();
 				if (this.getMax() == n) min = (min > 0 && min  == this.getMax() - this.length + 1) ? min : this.getMax() - this.length + 1;
-
+				if (this.length == this.n) min = 1;
 				boolean[] enteredNumbers = new boolean[this.length];
 				for (Cell c: this.state) {
 					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
