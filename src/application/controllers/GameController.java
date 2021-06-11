@@ -119,24 +119,25 @@ public class GameController implements Initializable{
 					tf.getStyleClass().add("notes");
 					if (showCorrect) unshowThisCorrect(i,j);
 					tf.setText(str8t.getState()[i][j].getNotesString());
-					str8t.getState()[i][j].enterNumber(0, str8t.getN());
+					str8t.getState()[i][j].setEntry(0);
 				} else {
 					if (Character.isDigit(tf.getText().toCharArray()[0])) {
 						tf.getStyleClass().remove("notes");
-						if (!str8t.getState()[i][j].enterNumber(Integer.valueOf(tf.getText()), str8t.getN())) {
+						if (!validEntry(Integer.valueOf(tf.getText()))) {
 							tf.setText("");
 						} else {
+							str8t.getState()[i][j].setEntry(Integer.valueOf(tf.getText()));
 							if (showCorrect) showThisCorrect(i,j);
 						}
 						str8t.print();
 					} else {
 						tf.setText("");
-						str8t.getState()[i][j].enterNumber(0, str8t.getN());
+						str8t.getState()[i][j].setEntry(0);
 						
 					}
 				}
 				
-			} else str8t.getState()[i][j].enterNumber(0, str8t.getN());
+			} else str8t.getState()[i][j].setEntry(0);
 			
 			if (str8t.gameOver()) {
 				this.gameListener.onGameOver();
@@ -191,6 +192,10 @@ public class GameController implements Initializable{
 				gridTf[i][j].getStyleClass().removeAll("false", "correct");
 			}
 		}
+	}
+	
+	public boolean validEntry(int x) {
+		return x > 0 && x <= str8t.getN();
 	}
 
 

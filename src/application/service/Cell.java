@@ -84,21 +84,6 @@ public class Cell {
 	}
 	
 
-	/*
-	 * try to enter number x here
-	 */
-	public boolean enterNumber(int x, int n) {
-		int newState = this.entry;
-		if (x > 0 && x <= n) {
-			newState = x;
-			setEntry(newState);
-			return true;
-		}
-		newState = 0;
-		setEntry(newState);
-		return false;
-	}
-	
 	@Override
 	public String toString() {
 		return "Cell: entry: " + this.entry + ", position " + this.x + ", " +this.y + ", type: " + this.cellType;
