@@ -1,6 +1,7 @@
 package application.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import application.constants.Solvability;
 
@@ -88,18 +89,21 @@ public class Street {
 		return missing;
 	}
 	public void setMissing(ArrayList<Integer> missing) {
+		Collections.sort(missing);
 		this.missing = missing;
 	}
 	public ArrayList<Integer> getBlocked() {
 		return blocked;
 	}
 	public void setBlocked(ArrayList<Integer> blocked) {
+		Collections.sort(blocked);
 		this.blocked = blocked;
 	}
 	public ArrayList<Integer> getPossible() {
 		return possible;
 	}
 	public void setPossible(ArrayList<Integer> possible) {
+		Collections.sort(possible);
 		this.possible = possible;
 	}
 	
