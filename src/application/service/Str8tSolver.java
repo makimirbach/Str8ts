@@ -237,18 +237,7 @@ public class Str8tSolver {
 			for (Cell c: s.getState()) {
 				if (c.getEntry() == 0) {
 					int entry = s.getMissing().get(0);
-					c.setEntry(entry);
-					ArrayList<Street> concernedStreets = getConcernedSteets(s, c);
-					for (Street cs: concernedStreets) {
-						int indexOtherMissing = cs.getMissing().indexOf(entry);
-						if (indexOtherMissing>=0) {
-							ArrayList<Integer> missing = cs.getMissing();
-							missing.remove(indexOtherMissing);
-							cs.setMissing(missing);
-						}
-						ApplyPossibleChange.removePossible(cs, entry);
-					}
-					s.getMissing().remove(0);
+					s = ApplyCellEntryChange.enterEntry(this, s, c, entry);
 				}
 			}
 		}
@@ -368,7 +357,6 @@ public class Str8tSolver {
 			for (int u: unblocked) {
 				if (!s.getMissing().contains(u) && !s.getEntries().contains(u) ) possible.add(u);
 			}
-	    	
 		    s = ApplyPossibleChange.addPossible(s, possible);
 		}
 	}
@@ -394,8 +382,7 @@ public class Str8tSolver {
 				}
 			}
 			if (counter == 1) {
-				s.getState()[possible.indexOf(true)].setEntry(m);
-				s = ApplyMissingChange.removeMissing(s, m);
+				s = ApplyCellEntryChange.enterEntry(this, s, s.getState()[possible.indexOf(true)], m);
 				j--;
 			}
 			possible.clear();
