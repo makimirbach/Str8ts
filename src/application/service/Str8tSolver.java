@@ -247,12 +247,7 @@ public class Str8tSolver {
 							missing.remove(indexOtherMissing);
 							cs.setMissing(missing);
 						}
-						int indexOtherPossible = cs.getPossible().indexOf(entry);
-						if (indexOtherPossible>=0) {
-							ArrayList<Integer> possible = cs.getPossible();
-							possible.remove(indexOtherPossible);
-							cs.setPossible(possible);
-						}
+						HandlePossibleChange.removePossible(cs, entry);
 					}
 					s.getMissing().remove(0);
 				}
@@ -362,8 +357,6 @@ public class Str8tSolver {
 	    			if (!s.getBlocked().contains(s.getMax() +1) && s.getMax() + 1 <= s.getN()) {
 	    				possible.add(s.getMax()+1);	
 	    			}
-	    			
-	    			
 	    		} else {
 	    			System.out.println("enter unique missing entry");
 	    		}
@@ -380,14 +373,10 @@ public class Str8tSolver {
 				if (!s.getMissing().contains(u) && !s.getEntries().contains(u) ) possible.add(u);
 			}
 	    	
-			// remove duplicates
-			possible = Helper.deleteDuplicates(possible);
-		    s.setPossible(possible);
+		    s.setPossible(HandlePossibleChange.addPossible(s, possible));
 		    // if #possible + #missing = #unentered, all are missing
 		    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
-		    	ArrayList<Integer> missing = s.getMissing();
-		    	missing.addAll(possible);
-		    	s.setMissing(missing);
+		    	s.setMissing(HandleMissingChange.addMissing(s, s.getPossible()));
 		    	possible.clear();
 		    	s.setPossible(possible);
 		    }
@@ -413,11 +402,8 @@ public class Str8tSolver {
 				}
 			}
 			if (counter == 1) {
-				// place to enter m: possible.indexOf(true);
 				s.getState()[possible.indexOf(true)].setEntry(m);
-				ArrayList<Integer> missing = s.getMissing();
-				missing.remove(possible.indexOf(true));
-				s.setMissing(missing);
+				s.setMissing(HandleMissingChange.removeMissing(s, m));
 				j--;
 			}
 			possible.clear();
@@ -439,9 +425,7 @@ public class Str8tSolver {
 				} 
 			}
 			if (counter == 0) {
-				ArrayList<Integer> possible = s.getPossible();
-				possible.remove(possible.indexOf(m));
-				s.setPossible(possible);
+				s.setPossible(HandlePossibleChange.removePossible(s, m));
 				j--;
 			}
 		}
