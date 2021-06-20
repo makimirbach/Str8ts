@@ -128,66 +128,7 @@ public class Street {
 		}
 	}
 	
-	/*
-	 * which numbers are missing in this street FOR SURE?
-	 */
-	public void findMissing() {
-		ArrayList<Integer> missing = new ArrayList<Integer>();
-		if (this.getMax() != 0) {
-			// something known yet
-			if (this.getMax() - this.getMin() + 1 == this.length || this.getMin() == 1 || this.getMax() == this.n || this.length == this.n) {
-				// exakt set of all numbers know
-				int min = getMin();
-				if (this.getMax() == n) min = (min > 0 && min  == this.getMax() - this.length + 1) ? min : this.getMax() - this.length + 1;
-				if (this.length == this.n) min = 1;
-				boolean[] enteredNumbers = new boolean[this.length];
-				for (Cell c: this.state) {
-					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
-				}
-				
-				for (int i = 0; i < this.length; i++) {
-					if (!enteredNumbers[i]) missing.add(i + min);
-				}
-			} else if (this.length > this.n / 2) {
-				int min = getMin();
-				min = (min > 0)? Integer.min(min, this.n - this.length + 1) : this.n - this.length + 1;
-				int max = getMax();
-				max = Integer.max(max, this.length) + 1;
-				boolean[] enteredNumbers = new boolean[max-min+1];
-				for (Cell c: this.state) {
-					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
-				}
-				for (int i = min; i < max; i++) {
-					if (!enteredNumbers[i-min]) missing.add(i);
-				}
-			} else if (this.getMin() != 0) {
-				// don't know exakt range
-				boolean[] enteredNumbers = new boolean[this.getMax() - this.getMin() + 1];
-				for (Cell c: this.state) {
-					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - this.getMin()] = true;
-				}
-				
-				for (int i = 0; i < this.getMax() - this.getMin() + 1; i++) {
-					if (!enteredNumbers[i]) missing.add(i + this.getMin());
-				}
-			}
-		}
-		setMissing(missing);
-	}
 	
-	/*
-	 * if only one missing and one unentered, enter it
-	 */
-	public void checkCanEnterMissing() {
-		if (this.missing.size() == 1 && this.getUnentered() == 1) {
-			for (Cell c: this.state) {
-				if (c.getEntry() == 0) {
-					c.setEntry(this.missing.get(0));
-					this.missing.remove(0);
-				}
-			}
-		}
-	}
 	
 	/*
 	 * check if given cell is contained in this street

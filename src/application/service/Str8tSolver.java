@@ -170,7 +170,78 @@ public class Str8tSolver {
 		}
 		return streets;
 	}
+	/*
+	 * which numbers are missing in this street FOR SURE?
+	 */
+	public void findMissing(Street s) {
+		ArrayList<Integer> missing = new ArrayList<Integer>();
+		if (s.getMax() != 0) {
+			// something known yet
+			if (s.getMax() - s.getMin() + 1 == s.getLength() || s.getMin() == 1 || s.getMax() == s.getN() || s.getLength() == s.getN()) {
+				// exakt set of all numbers know
+				int min = s.getMin();
+				if (s.getMax() == n) min = (min > 0 && min  == s.getMax() - s.getLength() + 1) ? min : s.getMax() - s.getLength() + 1;
+				if (s.getLength() == s.getN()) min = 1;
+				boolean[] enteredNumbers = new boolean[s.getLength()];
+				for (Cell c: s.getState()) {
+					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
+				}
+				
+				for (int i = 0; i < s.getLength(); i++) {
+					if (!enteredNumbers[i]) missing.add(i + min);
+				}
+			} else if (s.getLength() > this.n / 2) {
+				int min = s.getMin();
+				min = (min > 0)? Integer.min(min, this.n - s.getLength() + 1) : s.getN() - s.getLength() + 1;
+				int max = s.getMax();
+				max = Integer.max(max, s.getLength()) + 1;
+				boolean[] enteredNumbers = new boolean[max-min+1];
+				for (Cell c: s.getState()) {
+					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
+				}
+				for (int i = min; i < max; i++) {
+					if (!enteredNumbers[i-min]) missing.add(i);
+				}
+			} else if (s.getMin() != 0) {
+				// don't know exakt range
+				boolean[] enteredNumbers = new boolean[s.getMax() - s.getMin() + 1];
+				for (Cell c: s.getState()) {
+					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - s.getMin()] = true;
+				}
+				
+				for (int i = 0; i < s.getMax() - s.getMin() + 1; i++) {
+					if (!enteredNumbers[i]) missing.add(i + s.getMin());
+				}
+			}
+		}
+		s.setMissing(missing);
+	}
 	
+	/*
+	 * if only one missing and one unentered, enter it. remove it from missing (and possible of other street)
+	 */
+	public void checkCanEnterMissing(Street s) {
+		if (s.getMissing().size() == 1 && s.getUnentered() == 1) {
+			for (Cell c: s.getState()) {
+				if (c.getEntry() == 0) {
+					int entry = s.getMissing().get(0);
+					c.setEntry(entry);
+					Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
+					int indexOtherMissing = otherStreet.getMissing().indexOf(entry);
+					if (indexOtherMissing>=0) {
+						ArrayList<Integer> missing = otherStreet.getMissing();
+						missing.remove(indexOtherMissing);
+					}
+					int indexOtherPossible = otherStreet.getPossible().indexOf(entry);
+					if (indexOtherPossible>=0) {
+						ArrayList<Integer> possible = otherStreet.getPossible();
+						possible.remove(indexOtherPossible);
+					}
+					s.getMissing().remove(0);
+				}
+			}
+		}
+	}
 	/*
 	 * which numbers are blocked for all entrys in steet s 
 	 */
@@ -302,6 +373,33 @@ public class Str8tSolver {
 	    	possible.clear();
 	    	s.setPossible(possible);
 	    }
+	}
+	
+	public void checkMissingOrthogonally(Street s) {
+		for (int j = 0; j < s.getMissing().size(); j++) {
+			int m= s.getMissing().get(j);
+			int counter = 0;
+			ArrayList<Boolean> possible = new ArrayList<Boolean>();
+			for (int i = 0; i < s.getState().length; i++) {
+				Cell c = s.getState()[i];
+				Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
+				if (otherStreet.getPossible().contains(m) || otherStreet.getMissing().contains(m)) {
+					possible.add(true);
+					counter++;
+				} else {
+					possible.add(false);
+				}
+			}
+			if (counter == 1) {
+				// place to enter m: possible.indexOf(true);
+				s.getState()[possible.indexOf(true)].setEntry(m);
+				ArrayList<Integer> missing = s.getMissing();
+				missing.remove(possible.indexOf(true));
+				s.setMissing(missing);
+				j--;
+			}
+			possible.clear();
+		}
 	}
 	
 	public void printState() {
