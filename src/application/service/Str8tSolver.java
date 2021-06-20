@@ -307,7 +307,7 @@ public class Str8tSolver {
 	public void printState() {
 		for (int i= 0; i < this.n; i++) {
 			for (int j = 0; j < this.n; j++) {
-				System.out.print(this.state[i][j].getEntry());
+				System.out.print((this.solution[i][j].getEntry()!= 0)?this.state[i][j].getEntry():"x");
 			}
 			System.out.println();
 		}
