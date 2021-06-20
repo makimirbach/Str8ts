@@ -282,7 +282,7 @@ public class Str8tSolver {
 		ArrayList<Integer> unblocked = unblockedRange(s);
 		// consider length of street
 		for (int i = 0; i < unblocked.size();i++) {
-			if (unblocked.get(i) < s.getMin() - s.getUnentered() || unblocked.get(i) > s.getMax() + s.getUnentered()) {
+			if ((s.getMin() > 0 && unblocked.get(i) < s.getMin() - s.getUnentered()) || (s.getMax() > 0 && unblocked.get(i) > s.getMax() + s.getUnentered())) {
 				unblocked.remove(i);
 				i--;
 			}
