@@ -2,25 +2,27 @@ package application.service;
 
 import java.util.ArrayList;
 
-public class HandleMissingChange {
+public class ApplyMissingChange {
 	/*
 	 * add missing entries
 	 */
-	public static ArrayList<Integer> addMissing(Street s, ArrayList<Integer> newMissing) {
+	public static Street addMissing(Street s, ArrayList<Integer> newMissing) {
 		ArrayList<Integer> missing = s.getMissing();
 		missing.addAll(newMissing);
-		return Helper.deleteDuplicates(missing);
+		s.setMissing(Helper.deleteDuplicates(missing));
+		return s;
 	}
 	
 	/*
 	 * remove no more missing entry
 	 */
-	public static ArrayList<Integer> removeMissing(Street s, int toRemove) {
+	public static Street removeMissing(Street s, int toRemove) {
 		ArrayList<Integer> missing = s.getMissing();
 		if (missing.contains(toRemove)) {
 			int index = missing.indexOf(toRemove);
 			missing.remove(index);
 		}
-		return missing;
+		s.setMissing(missing);
+		return s;
 	}
 }

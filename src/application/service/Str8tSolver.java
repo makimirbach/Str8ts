@@ -92,7 +92,6 @@ public class Str8tSolver {
 		LinkedList<Street> streets = new LinkedList<Street>();
 		LinkedList<Cell> streetCells = new LinkedList<Cell>();
 		
-		
 		for (int i = 0; i < this.n; i++) {
 			// horizontal
 			for (int j = 0; j < this.n; j++) {
@@ -215,7 +214,7 @@ public class Str8tSolver {
 					}
 				}
 			}
-			s.setMissing(missing);
+			s = ApplyMissingChange.addMissing(s, missing);
 		}
 	}
 	/*
@@ -247,7 +246,7 @@ public class Str8tSolver {
 							missing.remove(indexOtherMissing);
 							cs.setMissing(missing);
 						}
-						HandlePossibleChange.removePossible(cs, entry);
+						ApplyPossibleChange.removePossible(cs, entry);
 					}
 					s.getMissing().remove(0);
 				}
@@ -334,7 +333,6 @@ public class Str8tSolver {
 				}
 			}
 		}
-		
 		return unblocked;
 		
 	}
@@ -344,8 +342,6 @@ public class Str8tSolver {
 	 */
 	public void possibleInStreet(Street s) {
 		if (s.getMissing().size() < s.getUnentered()) {
-		    int r = s.getState()[0].getX();
-		    int c = s.getState()[0].getY();
 		    ArrayList<Integer> possible = new ArrayList<Integer>();
 		    
 		    if (s.getMax() > 0 && s.getUnentered() == 1) {
@@ -373,13 +369,7 @@ public class Str8tSolver {
 				if (!s.getMissing().contains(u) && !s.getEntries().contains(u) ) possible.add(u);
 			}
 	    	
-		    s.setPossible(HandlePossibleChange.addPossible(s, possible));
-		    // if #possible + #missing = #unentered, all are missing
-		    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
-		    	s.setMissing(HandleMissingChange.addMissing(s, s.getPossible()));
-		    	possible.clear();
-		    	s.setPossible(possible);
-		    }
+		    s = ApplyPossibleChange.addPossible(s, possible);
 		}
 	}
 	
@@ -393,17 +383,19 @@ public class Str8tSolver {
 			ArrayList<Boolean> possible = new ArrayList<Boolean>();
 			for (int i = 0; i < s.getState().length; i++) {
 				Cell c = s.getState()[i];
-				Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
-				if (otherStreet.getPossible().contains(m) || otherStreet.getMissing().contains(m)) {
-					possible.add(true);
-					counter++;
-				} else {
-					possible.add(false);
+				if (c.getEntry() == 0) {
+					Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
+					if (otherStreet.getPossible().contains(m) || otherStreet.getMissing().contains(m)) {
+						possible.add(true);
+						counter++;
+					} else {
+						possible.add(false);
+					}
 				}
 			}
 			if (counter == 1) {
 				s.getState()[possible.indexOf(true)].setEntry(m);
-				s.setMissing(HandleMissingChange.removeMissing(s, m));
+				s = ApplyMissingChange.removeMissing(s, m);
 				j--;
 			}
 			possible.clear();
@@ -425,7 +417,7 @@ public class Str8tSolver {
 				} 
 			}
 			if (counter == 0) {
-				s.setPossible(HandlePossibleChange.removePossible(s, m));
+				s = ApplyPossibleChange.removePossible(s, m);
 				j--;
 			}
 		}

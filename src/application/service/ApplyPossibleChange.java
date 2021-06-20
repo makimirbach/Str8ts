@@ -2,20 +2,31 @@ package application.service;
 
 import java.util.ArrayList;
 
-public class HandlePossibleChange {
+public class ApplyPossibleChange {
+	
+	public static Street possibleChanged(Street s) {
+		// if #possible + #missing = #unentered, all are missing
+	    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
+	    	s = ApplyMissingChange.addMissing(s, s.getPossible());
+	    	s.setPossible(new ArrayList<Integer>());
+	    }
+		return s;
+	}
 	/*
 	 * add possible entries
 	 */
-	public static ArrayList<Integer> addPossible(Street s, ArrayList<Integer> newPossible) {
+	public static Street addPossible(Street s, ArrayList<Integer> newPossible) {
 		ArrayList<Integer> possible = s.getPossible();
 		possible.addAll(newPossible);
-		return Helper.deleteDuplicates(possible);
+		s.setPossible(Helper.deleteDuplicates(possible));
+		s = possibleChanged(s);
+		return s;
 	}
 	
 	/*
 	 * remove possible entry: might remove some more!
 	 */
-	public static ArrayList<Integer> removePossible(Street s, int toRemove) {
+	public static Street removePossible(Street s, int toRemove) {
 		ArrayList<Integer> possible = s.getPossible();
 		if (possible.contains(toRemove)) {
 			int index = possible.indexOf(toRemove);
@@ -28,6 +39,8 @@ public class HandlePossibleChange {
 				}
 			}
 		}
-		return possible;
+		s.setPossible(possible);
+		s = possibleChanged(s);
+		return s;
 	}
 }
