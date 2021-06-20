@@ -1,6 +1,7 @@
 package application.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import application.constants.CellType;
@@ -60,6 +61,28 @@ public class Helper {
 			e += Integer.toString(i);
 		}
 		return e;
+	}
+	
+	/*
+	 * how much space between blocked entries (sorted ascendingly)
+	 */
+	public static ArrayList<Integer> getLengthsBetweenBlocked(ArrayList<Integer> blocked) {
+		ArrayList<Integer> lengths = new ArrayList<Integer>();
+		for (int i = 1; i < blocked.size(); i++) {
+			lengths.add(blocked.get(i) - ((i > 1)?(blocked.get(i-1)):0) - 1); // could be zero if consecutive numbers blocked
+		}
+		return lengths;
+	}
+	
+	/*
+	 * delete duplicates from array list
+	 */
+	public static ArrayList<Integer> deleteDuplicates(ArrayList<Integer> list) {
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		hashSet.addAll(list);
+		list.clear();
+		list.addAll(hashSet);
+		return list;
 	}
 	
 	/*
