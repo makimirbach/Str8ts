@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import application.constants.CellType;
 
 public class Str8tSolver {
-	//private LinkedList<Entry> llstSolution = new LinkedList<Entry>();
 	private Cell[][] state;
 	private Cell[][] solution;
 	private int n;
@@ -24,7 +23,6 @@ public class Str8tSolver {
 			}
 		}
 	}
-	
 	public Cell[][] getState() {
 		return state;
 	}
@@ -137,9 +135,9 @@ public class Str8tSolver {
 				else t[1] = s;
 			}
 		}
-		return t;
-		
+		return t;	
 	}
+	
 	/*
 	 * get streets in same row (horizontal) or column respectively
 	 */
@@ -208,9 +206,10 @@ public class Str8tSolver {
 	}
 	
 	/*
-	   * set all possible numbers in a streets
-	   */
-	  public void possibleInStreet(Street s) {
+	 * todo
+	 * set all possible numbers in a streets
+	 */
+	public void possibleInStreet(Street s) {
 	    int r = s.getState()[0].getX();
 	    int c = s.getState()[0].getY();
 	    ArrayList<Integer> possible = new ArrayList<Integer>();
@@ -236,15 +235,15 @@ public class Str8tSolver {
 	    if (s.getPossible().size() == 1) {
 	    	s.setMissing(possible);
 	    }
-	  }
-	  
-	  public void printState() {
-			for (int i= 0; i < this.n; i++) {
-				for (int j = 0; j < this.n; j++) {
-					System.out.print(this.state[i][j].getEntry());
-				}
-				System.out.println();
+	}
+	
+	public void printState() {
+		for (int i= 0; i < this.n; i++) {
+			for (int j = 0; j < this.n; j++) {
+				System.out.print(this.state[i][j].getEntry());
 			}
 			System.out.println();
 		}
+		System.out.println();
+	}
 }

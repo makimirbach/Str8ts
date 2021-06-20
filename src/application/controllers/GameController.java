@@ -103,6 +103,7 @@ public class GameController implements Initializable{
 			}
 		}
 	}
+	
 	/*
 	 * handle exiting cell after writing numbers
 	 * just one number: enter it
@@ -110,7 +111,7 @@ public class GameController implements Initializable{
 	 */
 	public void tfExit(int i, int j) {
 		if (state == GameState.PLAYING) {
-			TextField tf = gridTf[i][j]; //todo get current field
+			TextField tf = gridTf[i][j]; 
 			
 			if (!tf.getText().equals("")) {
 				// more than one number entered
@@ -194,6 +195,9 @@ public class GameController implements Initializable{
 		}
 	}
 	
+	/*
+	 * check if entry is valid
+	 */
 	public boolean validEntry(int x) {
 		return x > 0 && x <= str8t.getN();
 	}

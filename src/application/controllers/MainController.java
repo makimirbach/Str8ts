@@ -38,7 +38,6 @@ public class MainController implements Initializable, IGameListener {
 		
 		gameController.state = GameState.BEFORE;
 		gameController.setGameListener(this);
-		
 		startController.setGameListener(this);
 		init();	
 	}
@@ -50,12 +49,10 @@ public class MainController implements Initializable, IGameListener {
 			gameController.state = GameState.BEFORE;
 			startController.init();
 		}
-		
 		checkHints.setVisible(false);
 	}
 	
 	public void startGame(int n) {
-
 		if (gameController.state == GameState.BEFORE) {
 			gameController.gpBase.setVisible(true);
 			gameController.showCorrect = false;
@@ -68,8 +65,7 @@ public class MainController implements Initializable, IGameListener {
 			gameController.str8t = new Str8t(n, Helper.cellMatrixFromEntries(m,m), Helper.cellMatrixFromEntries(s,m));
 			gameController.initGrid(n);
 			gameController.state = GameState.PLAYING;
-		}
-		
+		}	
 	}
 	
 	/*
@@ -78,6 +74,7 @@ public class MainController implements Initializable, IGameListener {
 	public void showHelpTip() {
 		btnHelp.setTooltip(new Tooltip(Messages.HELP_MENU));
 	}
+	
 	/*
 	 * click on help button
 	 */
@@ -87,8 +84,8 @@ public class MainController implements Initializable, IGameListener {
 	    alert.setHeaderText(Messages.RULES_HEADER);
 	    alert.setContentText(Messages.RULES);
 	    alert.showAndWait();
-	    
 	}
+	
 	/*
 	 * click on checkbox 'hints'
 	 */

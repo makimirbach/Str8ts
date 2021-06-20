@@ -24,9 +24,6 @@ public class Street {
 		setMissing(new ArrayList<Integer>());
 		setPossible(new ArrayList<Integer>());
 	}
-	/*
-	 * getter & setter
-	 */
 	public int getMin() {
 		int minValue = getMax();
 		for (int i = 0; i < this.length; i++) {
@@ -36,7 +33,6 @@ public class Street {
 		}
 		return minValue;
 	}
-	
 	public int getMax() {
 		if (this.state.length == 0) return 0;
 		int maxValue = this.state[0].getEntry();
@@ -47,7 +43,6 @@ public class Street {
 		}
 		return maxValue;
 	}
-	
 	public int getN() {
 		return n;
 	}
@@ -73,14 +68,9 @@ public class Street {
 		}
 		return count;
 	}
-	
 	public int getUnentered() {
 		return this.length - getEntered();
 	}
-	
-	
-	
-	
 	public ArrayList<Integer> getEntries() {
 		ArrayList<Integer> entries = new ArrayList<Integer>();
 		for (Cell c: this.state) {
@@ -88,7 +78,6 @@ public class Street {
 		}
 		return entries;
 	}
-	
 	public boolean isHorizontal() {
 		return horizontal;
 	}
@@ -101,7 +90,6 @@ public class Street {
 	public void setMissing(ArrayList<Integer> missing) {
 		this.missing = missing;
 	}
-	
 	public ArrayList<Integer> getBlocked() {
 		return blocked;
 	}
@@ -114,6 +102,8 @@ public class Street {
 	public void setPossible(ArrayList<Integer> possible) {
 		this.possible = possible;
 	}
+	
+	
 	/*
 	 * check if str8t s is (uniquely) solvable i.e. contains only consecutive numbers
 	 */
@@ -153,6 +143,18 @@ public class Street {
 				
 				for (int i = 0; i < this.length; i++) {
 					if (!enteredNumbers[i]) missing.add(i + min);
+				}
+			} else if (this.length > this.n / 2) {
+				int min = getMin();
+				min = (min > 0)? Integer.min(min, this.n - this.length + 1) : this.n - this.length + 1;
+				int max = getMax();
+				max = Integer.max(max, this.length) + 1;
+				boolean[] enteredNumbers = new boolean[max-min+1];
+				for (Cell c: this.state) {
+					if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
+				}
+				for (int i = min; i < max; i++) {
+					if (!enteredNumbers[i-min]) missing.add(i);
 				}
 			} else if (this.getMin() != 0) {
 				// don't know exakt range
@@ -195,7 +197,7 @@ public class Street {
 	
 	@Override
 	public String toString() {
-		return "\nStreet: " + Helper.getEntriesToString(this.state) +  ", starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ") blocked: " + this.getBlocked() + " missing " + this.getMissing() + " possible " + this.getPossible();
+		return "\nStreet: " + Helper.getEntriesToString(this.state) + "(" + this.length + "), starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ")" + ((this.getEntered() < this.length)? " blocked: " + this.getBlocked() + " missing " + this.getMissing() + " possible " + this.getPossible() : "");
 	}
 	
 	

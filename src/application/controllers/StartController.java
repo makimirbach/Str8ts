@@ -43,7 +43,6 @@ public class StartController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		init();
-		
 	} 
 	
 	public void setGameListener(IGameListener gameListener) {
@@ -51,7 +50,6 @@ public class StartController implements Initializable {
 	}
 
 	public void init() {
-		
 		cbSize.setItems(lstSizes);
 		cbSize.setPromptText(Messages.CHOOSE_SIZE);
 		btnStart.setText(Messages.CLICK_START);
@@ -67,14 +65,9 @@ public class StartController implements Initializable {
 	 * very beginning: user chooses size
 	 */
 	public void clickStart(ActionEvent event) {
-		
 		if (!cbSize.getSelectionModel().isEmpty()) {
 			this.n = cbSize.getValue();
 			this.gameListener.onGameStart();
 		}
-		else System.out.println("nah");
-		
 	}
-
-	
 }

@@ -45,8 +45,9 @@ public class Str8t {
 		System.out.println();
 	}
 	
-	
-	//TOdo
+	/*
+	 * check if everything is correctly entered
+	 */
 	public boolean gameOver() {
 		for (int i = 0; i < this.n; i++) {
 			for (int j = 0; j < this.n; j++) {
@@ -56,7 +57,9 @@ public class Str8t {
 		return true;
 	}
 	
-	// TODO
+	/*
+	 * check one entry
+	 */
 	public boolean checkNumberCorrect(int r, int c) {
 		if ((this.state[r][c].getEntry() == this.solution[r][c].getEntry() && this.state[r][c].getEntry() != 0) || this.solution[r][c].getEntry() < 0) return true;
 		return false;

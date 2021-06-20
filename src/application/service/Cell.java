@@ -11,7 +11,7 @@ public class Cell {
 	private Street[] streets;
 	private int entry;
 	private CellType cellType;
-	private ArrayList<Integer> notes;
+	private ArrayList<Integer> notes; // what could be entered here
 	
 	
 	public Cell(int x, int y, Street[] streets, int entry, CellType cellType) {
@@ -58,6 +58,9 @@ public class Cell {
 		this.notes = notes;
 	}
 	
+	/*
+	 * enter (valid) notes from string
+	 */
 	public void updateNotes(String note, int n) {
 		ArrayList<Integer> noteList = new ArrayList<Integer>();
 		for (char x: note.toCharArray()) {

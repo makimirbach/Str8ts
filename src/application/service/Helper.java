@@ -50,6 +50,9 @@ public class Helper {
 		return entries;
 	}
 	
+	/*
+	 * cell-entries to string
+	 */
 	public static String getEntriesToString(Cell[] cells) {
 		int[] entries = getEntries(cells);
 		String e = "";
@@ -60,44 +63,8 @@ public class Helper {
 	}
 	
 	/*
-	 * get max elt > 0 from an array
+	 * generate cell-2d-array from state and solution
 	 */
-	public static int getMax(int[] a) {
-		if (a.length == 0) return 0;
-		int maxValue = a[0];
-		for (int i = 1; i < a.length; i++) {
-			if (a[i] > maxValue) {
-				maxValue = a[i];
-			}
-		}
-		return maxValue;
-	}
-	/*
-	 * get min elt > 0 from an array
-	 * or 0 if only zeros contained
-	 */
-	public static int getRealMin(int[] a) {
-		
-		int minValue = getMax(a);
-		for (int i = 0; i < a.length; i++) {
-			if (a[i] < minValue && a[i] > 0) {
-				minValue = a[i];
-			}
-		}
-		return minValue;
-	}
-	
-	/*
-	 * count numbers != 0 in array
-	 */
-	public static int getEntered(int[] a) {
-		int count = 0;
-		for (int i = 0; i < a.length; i++) {
-			if (a[i] != 0) count++;
-		}
-		return count;
-	}
-	
 	public static Cell[][] cellMatrixFromEntries(int[][] state, int[][] solution) {
 		Cell[][] cells = new Cell[state.length][state.length];
 		
