@@ -202,11 +202,61 @@ public class Str8tSolver {
 			} 
 			
 		}
+		// remove duplicates
+		blocked = Helper.deleteDuplicates(blocked);
 		s.setBlocked(blocked);
 	}
 	
 	/*
-	 * todo
+	 * considering already blocked entries, what is max range for this street
+	 */
+	public ArrayList<Integer> unblockedRange(Street s) {
+		ArrayList<Integer> unblocked = new ArrayList<Integer>();
+		ArrayList<Integer> blocked = s.getBlocked(); // sorted from min to max
+		
+		if (s.getMax() > 0) {
+			// know some entries
+			int min = 0;
+			int max = s.getN()+1; // exklusive
+			if (s.getMin() > 0) {
+				for (int b: blocked) {
+					if (b > min && b < s.getMin()) min = b;
+				}
+			}
+			for (int b: blocked) {
+				if (b < max && b > s.getMax()) max = b;
+			}
+			// combine unblocked
+			for (int i = min + 1; i < max; i++) {
+				unblocked.add(i);
+			}
+		} else {
+			// consider length
+			ArrayList<Integer> lengths = Helper.getLengthsBetweenBlocked(blocked, s.getN());
+			for (int i = 0; i < lengths.size(); i++) {
+				if (lengths.get(i) >= s.getLength()) {
+					if (i == 0) {
+						for (int u = 1; u < blocked.get(i); u++) {
+							unblocked.add(u);
+						}
+					} else if (i == lengths.size() - 1){
+						for (int u = blocked.get(i-1) +1; u <= s.getN(); u++) {
+							unblocked.add(u);
+						}
+					} else {
+						for (int u = blocked.get(i-1) + 1; u < blocked.get(i); u++) {
+							unblocked.add(u);
+						}
+					}
+				}
+			}
+		}
+		
+		return unblocked;
+		
+	}
+	
+	/*
 	 * set all possible numbers in a streets
 	 */
 	public void possibleInStreet(Street s) {
@@ -214,26 +264,43 @@ public class Str8tSolver {
 	    int c = s.getState()[0].getY();
 	    ArrayList<Integer> possible = new ArrayList<Integer>();
 	    
-	    if (s.getMax() > 0) {
-	    	if (s.getUnentered() == 1) {
-	    		if (s.getLength() > s.getMax() - s.getMin() + 1) {
-	    			if (!s.getBlocked().contains(s.getMin() - 1) && s.getMin() - 1 > 0) {
-	    				possible.add(s.getMin() - 1);
-	    			}
-	    			if (!s.getBlocked().contains(s.getMax() +1) && s.getMax() + 1 <= s.getN()) {
-	    				possible.add(s.getMax()+1);	
-	    			}
-	    			
-	    			
-	    		} else {
-	    			System.out.println("enter unique missing entry");
-	    		}
-	    	}
-	    }
-	    
+	    if (s.getMax() > 0 && s.getUnentered() == 1) {
+    	
+    		if (s.getLength() > s.getMax() - s.getMin() + 1) {
+    			if (!s.getBlocked().contains(s.getMin() - 1) && s.getMin() - 1 > 0) {
+    				possible.add(s.getMin() - 1);
+    			}
+    			if (!s.getBlocked().contains(s.getMax() +1) && s.getMax() + 1 <= s.getN()) {
+    				possible.add(s.getMax()+1);	
+    			}
+    			
+    			
+    		} else {
+    			System.out.println("enter unique missing entry");
+    		}
+	    } 
+		ArrayList<Integer> unblocked = unblockedRange(s);
+		// consider length of street
+		for (int i = 0; i < unblocked.size();i++) {
+			if (unblocked.get(i) < s.getMin() - s.getUnentered() || unblocked.get(i) > s.getMax() + s.getUnentered()) {
+				unblocked.remove(i);
+				i--;
+			}
+		}
+		for (int u: unblocked) {
+			if (!s.getMissing().contains(u) && !s.getEntries().contains(u) ) possible.add(u);
+		}
+    	
+		// remove duplicates
+		possible = Helper.deleteDuplicates(possible);
 	    s.setPossible(possible);
-	    if (s.getPossible().size() == 1) {
-	    	s.setMissing(possible);
+	    // if #possible + #missing = #unentered, all are missing
+	    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
+	    	ArrayList<Integer> missing = s.getMissing();
+	    	missing.addAll(possible);
+	    	s.setMissing(missing);
+	    	possible.clear();
+	    	s.setPossible(possible);
 	    }
 	}
 	

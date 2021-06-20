@@ -66,11 +66,12 @@ public class Helper {
 	/*
 	 * how much space between blocked entries (sorted ascendingly)
 	 */
-	public static ArrayList<Integer> getLengthsBetweenBlocked(ArrayList<Integer> blocked) {
+	public static ArrayList<Integer> getLengthsBetweenBlocked(ArrayList<Integer> blocked, int n) {
 		ArrayList<Integer> lengths = new ArrayList<Integer>();
-		for (int i = 1; i < blocked.size(); i++) {
-			lengths.add(blocked.get(i) - ((i > 1)?(blocked.get(i-1)):0) - 1); // could be zero if consecutive numbers blocked
+		for (int i = 0; i < blocked.size(); i++) {
+			lengths.add(blocked.get(i) - ((i > 0)?(blocked.get(i-1)):0) - 1); // could be zero if consecutive numbers blocked
 		}
+		lengths.add(n - blocked.get(blocked.size()-1));
 		return lengths;
 	}
 	
