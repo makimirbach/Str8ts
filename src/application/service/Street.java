@@ -24,6 +24,7 @@ public class Street {
 		setLength(state.length);
 		setMissing(new ArrayList<Integer>());
 		setPossible(new ArrayList<Integer>());
+		setBlocked(new ArrayList<Integer>());
 	}
 	public int getMin() {
 		int minValue = getMax();

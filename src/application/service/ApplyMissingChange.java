@@ -10,6 +10,12 @@ public class ApplyMissingChange {
 		ArrayList<Integer> missing = s.getMissing();
 		missing.addAll(newMissing);
 		s.setMissing(Helper.deleteDuplicates(missing));
+		// those are not longer (only) possible
+		for (int i = 0; i < newMissing.size(); i++) {
+			int m = newMissing.get(i);
+			s = ApplyPossibleChange.removePossible(s,m);
+		}
+		
 		return s;
 	}
 	
