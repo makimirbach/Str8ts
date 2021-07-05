@@ -86,6 +86,26 @@ public class Helper {
 		return list;
 	}
 	
+	
+	
+	/*
+	 * check if int plays any role in street, i.e. is entered, possible or missing
+	 */
+	public static boolean checkRelevantInStreet(Street s, int i) {
+		if (i <= s.getMax() && i >= s.getMin()) return true;
+		for (int p: s.getPossible()) {
+			if (i == p) return true;
+		}
+		for (int e: s.getEntries()) {
+			if (i == e) return true;
+		}
+		for (int m: s.getMissing()) {
+			if (i == m) return true;
+		}
+		return false;
+	}
+	
+	
 	/*
 	 * generate cell-2d-array from state and solution
 	 */
