@@ -194,6 +194,7 @@ public class Str8tSolver {
 					int min = s.getMin();
 					min = (min > 0)? Integer.min(min, this.n - s.getLength() + 1) : s.getN() - s.getLength() + 1;
 					int max = s.getMax();
+					// exclusive max
 					max = Integer.max(max, s.getLength()) + 1;
 					boolean[] enteredNumbers = new boolean[max-min+1];
 					for (Cell c: s.getState()) {
@@ -215,10 +216,9 @@ public class Str8tSolver {
 					// consider unblocked range
 					ArrayList<Integer> unblocked = unblockedRange(s);
 					if (s.getLength() > unblocked.size() / 2) {
-						int min = s.getMin();
-						min = (min > 0)? Integer.min(min, unblocked.get(unblocked.size()-1) - s.getLength() + 1) : unblocked.get(unblocked.size()-1) - s.getLength() + 1;
-						int max = s.getMax();
-						max = Integer.max(max, s.getLength()) + 1;
+						int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
+						// exclusive max
+						int max = unblocked.get(0) + s.getLength();
 						enteredNumbers = new boolean[max-min+1];
 						for (Cell c: s.getState()) {
 							if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
