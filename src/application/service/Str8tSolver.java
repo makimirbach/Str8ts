@@ -219,6 +219,7 @@ public class Str8tSolver {
 						int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
 						// exclusive max
 						int max = unblocked.get(0) + s.getLength();
+						System.out.println("s = " + s +" im Bereich " +min + " bis " +max);
 						enteredNumbers = new boolean[max-min+1];
 						for (Cell c: s.getState()) {
 							if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
@@ -364,9 +365,12 @@ public class Str8tSolver {
 			ArrayList<Integer> unblocked = unblockedRange(s);
 			// consider length of street
 			for (int i = 0; i < unblocked.size();i++) {
-				if ((s.getMin() > 0 && unblocked.get(i) < s.getMin() - s.getUnentered()) || (s.getMax() > 0 && unblocked.get(i) > s.getMax() + s.getUnentered())) {
-					unblocked.remove(i);
-					i--;
+				if (s.getMin() > 0) {
+					if ((unblocked.get(i) < s.getMin() - s.getUnentered()) || (unblocked.get(i) > s.getMax() + s.getUnentered())
+							|| (unblocked.get(i) <= s.getMax() - s.getLength()) || (unblocked.get(i) >= s.getMin() + s.getLength())) {
+						unblocked.remove(i);
+						i--;
+					}
 				}
 			}
 			for (int u: unblocked) {
@@ -394,6 +398,9 @@ public class Str8tSolver {
 					} else {
 						possible.add(false);
 					}
+				} else {
+					possible.add(false);
+					
 				}
 			}
 			if (counter == 1) {

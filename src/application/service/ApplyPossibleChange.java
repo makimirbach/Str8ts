@@ -55,15 +55,18 @@ public class ApplyPossibleChange {
 			possible.remove(index);
 			// also remove no longer possible 
 			for (int i = 0; i < possible.size(); i++) {
-				if ((s.getMin() > 0 && possible.get(i) < s.getMin() - s.getUnentered()) || (s.getMax() > 0 && possible.get(i) > s.getMax() + s.getUnentered())) {
-					possible.remove(i);
-					i--;
+				if (s.getMin()> 0) {
+					if ((possible.get(i) < s.getMin() - s.getUnentered()) || (possible.get(i) > s.getMax() + s.getUnentered()) || (possible.get(i) <= s.getMax() - s.getLength()) || (possible.get(i) >= s.getMin() + s.getLength())
+							) {
+						possible.remove(i);
+						i--;
+					}
 				}
 			}
 			possible.removeAll(findIsolated(s));
+			s.setPossible(possible);
+			s = possibleChanged(s);
 		}
-		s.setPossible(possible);
-		s = possibleChanged(s);
 		return s;
 	}
 }
