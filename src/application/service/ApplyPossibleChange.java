@@ -26,9 +26,9 @@ public class ApplyPossibleChange {
 	/*
 	 * if #possible + #missing = #unentered, all are missing
 	 */
-	public static Street possibleChanged(Street s) {
+	public static Street possibleChanged(Str8tSolver str8t, Street s) {
 	    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
-	    	s = ApplyMissingChange.addMissing(s, s.getPossible());
+	    	s = ApplyMissingChange.addMissing(str8t, s, s.getPossible());
 	    	s.setPossible(new ArrayList<Integer>());
 	    }
 		return s;
@@ -37,18 +37,18 @@ public class ApplyPossibleChange {
 	/*
 	 * add possible entries
 	 */
-	public static Street addPossible(Street s, ArrayList<Integer> newPossible) {
+	public static Street addPossible(Str8tSolver str8t, Street s, ArrayList<Integer> newPossible) {
 		ArrayList<Integer> possible = s.getPossible();
 		possible.addAll(newPossible);
 		s.setPossible(Helper.deleteDuplicates(possible));
-		s = possibleChanged(s);
+		s = possibleChanged(str8t, s);
 		return s;
 	}
 	
 	/*
 	 * remove possible entry: might remove some more!
 	 */
-	public static Street removePossible(Street s, int toRemove) {
+	public static Street removePossible(Str8tSolver str8t, Street s, int toRemove) {
 		ArrayList<Integer> possible = s.getPossible();
 		if (possible.contains(toRemove)) {
 			int index = possible.indexOf(toRemove);
@@ -65,7 +65,7 @@ public class ApplyPossibleChange {
 			}
 			if(s.getLength() > 1)  possible.removeAll(findIsolated(s));
 			s.setPossible(possible);
-			s = possibleChanged(s);
+			s = possibleChanged(str8t, s);
 		}
 		return s;
 	}

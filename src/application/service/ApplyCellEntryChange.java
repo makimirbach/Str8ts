@@ -26,7 +26,7 @@ public class ApplyCellEntryChange {
 			ArrayList<Street> concernedStreets = getConcernedSteets(str8t, s, c);
 			for (Street cs: concernedStreets) {
 				cs = ApplyMissingChange.removeMissing(cs, entry);
-				cs = ApplyPossibleChange.removePossible(cs, entry);
+				cs = ApplyPossibleChange.removePossible(str8t, cs, entry);
 			}
 			
 		

@@ -213,20 +213,20 @@ public class Str8tSolver {
 					for (int i = 0; i < s.getMax() - s.getMin() + 1; i++) {
 						if (!enteredNumbers[i]) missing.add(i + s.getMin());
 					}
-					// consider unblocked range
-					ArrayList<Integer> unblocked = unblockedRange(s);
-					if (s.getLength() > unblocked.size() / 2) {
-						int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
-						// exclusive max
-						int max = unblocked.get(0) + s.getLength();
-						System.out.println("s = " + s +" im Bereich " +min + " bis " +max);
-						enteredNumbers = new boolean[max-min+1];
-						for (Cell c: s.getState()) {
-							if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
-						}
-						for (int i = min; i < max; i++) {
-							if (!enteredNumbers[i-min]) missing.add(i);
-						}
+					
+				}
+				// consider unblocked range
+				ArrayList<Integer> unblocked = unblockedRangePossible(s);
+				if (s.getLength() > unblocked.size() / 2) {
+					int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
+					// exclusive max
+					int max = unblocked.get(0) + s.getLength();
+					boolean[] enteredNumbers = new boolean[max-min+1];
+					for (Cell c: s.getState()) {
+						if (c.getEntry() != 0&& c.getEntry() <= max && c.getEntry() >= min) enteredNumbers[c.getEntry() - min] = true;
+					}
+					for (int i = min; i < max; i++) {
+						if (!enteredNumbers[i-min]) missing.add(i);
 					}
 				}
 			} else {
@@ -236,17 +236,16 @@ public class Str8tSolver {
 					int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
 					// exclusive max
 					int max = unblocked.get(0) + s.getLength();
-					System.out.println("s = " + s +" im Bereich " +min + " bis " +max);
 					boolean[] enteredNumbers = new boolean[max-min+1];
 					for (Cell c: s.getState()) {
-						if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
+						if (c.getEntry() != 0 && c.getEntry() <=max && c.getEntry() >= min) enteredNumbers[c.getEntry() - min] = true;
 					}
 					for (int i = min; i < max; i++) {
 						if (!enteredNumbers[i-min]) missing.add(i);
 					}
 				}
 			}
-			s = ApplyMissingChange.addMissing(s, missing);
+			s = ApplyMissingChange.addMissing(this, s, missing);
 		}
 	}
 	/*
@@ -303,11 +302,8 @@ public class Str8tSolver {
 					blocked.add(this.state[i][c].getEntry());
 				}
 			} 
-			
 		}
-		// remove duplicates
-		blocked = Helper.deleteDuplicates(blocked);
-		s.setBlocked(blocked);
+		s = ApplyBlockedChange.addBlocked(this, s, blocked);
 	}
 	
 	/*
@@ -412,7 +408,7 @@ public class Str8tSolver {
 			for (int u: unblocked) {
 				if (!s.getMissing().contains(u) && !s.getEntries().contains(u) ) possible.add(u);
 			}
-		    s = ApplyPossibleChange.addPossible(s, possible);
+		    s = ApplyPossibleChange.addPossible(this, s, possible);
 		}
 	}
 	
@@ -480,7 +476,7 @@ public class Str8tSolver {
 				} 
 			}
 			if (counter == 0) {
-				s = ApplyPossibleChange.removePossible(s, m);
+				s = ApplyPossibleChange.removePossible(this, s, m);
 				j--;
 			}
 		}
