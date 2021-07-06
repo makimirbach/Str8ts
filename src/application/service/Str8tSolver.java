@@ -186,11 +186,11 @@ public class Str8tSolver {
 					for (Cell c: s.getState()) {
 						if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
 					}
-					
 					for (int i = 0; i < s.getLength(); i++) {
 						if (!enteredNumbers[i]) missing.add(i + min);
 					}
 				} else if (s.getLength() > this.n / 2) {
+					// 'long' street
 					int min = s.getMin();
 					min = (min > 0)? Integer.min(min, this.n - s.getLength() + 1) : s.getN() - s.getLength() + 1;
 					int max = s.getMax();
@@ -213,38 +213,23 @@ public class Str8tSolver {
 					for (int i = 0; i < s.getMax() - s.getMin() + 1; i++) {
 						if (!enteredNumbers[i]) missing.add(i + s.getMin());
 					}
-					
 				}
-				// consider unblocked range
-				ArrayList<Integer> unblocked = unblockedRangePossible(s);
-				if (s.getLength() > unblocked.size() / 2) {
-					int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
-					// exclusive max
-					int max = unblocked.get(0) + s.getLength();
-					boolean[] enteredNumbers = new boolean[max-min+1];
-					for (Cell c: s.getState()) {
-						if (c.getEntry() != 0&& c.getEntry() <= max && c.getEntry() >= min) enteredNumbers[c.getEntry() - min] = true;
-					}
-					for (int i = min; i < max; i++) {
-						if (!enteredNumbers[i-min]) missing.add(i);
-					}
+			} 
+			// consider unblocked range (within possible numbers)
+			ArrayList<Integer> unblocked = unblockedRangePossible(s);
+			if (s.getLength() > unblocked.size() / 2) {
+				int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
+				// exclusive max
+				int max = unblocked.get(0) + s.getLength();
+				boolean[] enteredNumbers = new boolean[max-min+1];
+				for (Cell c: s.getState()) {
+					if (c.getEntry() != 0 && c.getEntry() <=max && c.getEntry() >= min) enteredNumbers[c.getEntry() - min] = true;
 				}
-			} else {
-				// consider unblocked range (within possible numbers)
-				ArrayList<Integer> unblocked = unblockedRangePossible(s);
-				if (s.getLength() > unblocked.size() / 2) {
-					int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
-					// exclusive max
-					int max = unblocked.get(0) + s.getLength();
-					boolean[] enteredNumbers = new boolean[max-min+1];
-					for (Cell c: s.getState()) {
-						if (c.getEntry() != 0 && c.getEntry() <=max && c.getEntry() >= min) enteredNumbers[c.getEntry() - min] = true;
-					}
-					for (int i = min; i < max; i++) {
-						if (!enteredNumbers[i-min]) missing.add(i);
-					}
+				for (int i = min; i < max; i++) {
+					if (!enteredNumbers[i-min]) missing.add(i);
 				}
 			}
+			
 			s = ApplyMissingChange.addMissing(this, s, missing);
 		}
 	}
