@@ -203,7 +203,7 @@ public class Str8tSolver {
 					for (int i = min; i < max; i++) {
 						if (!enteredNumbers[i-min]) missing.add(i);
 					}
-				} else if (s.getMin() != 0) {
+				} else  {
 					// don't know exakt range
 					boolean[] enteredNumbers = new boolean[s.getMax() - s.getMin() + 1];
 					for (Cell c: s.getState()) {
@@ -227,6 +227,22 @@ public class Str8tSolver {
 						for (int i = min; i < max; i++) {
 							if (!enteredNumbers[i-min]) missing.add(i);
 						}
+					}
+				}
+			} else {
+				// consider unblocked range (within possible numbers)
+				ArrayList<Integer> unblocked = unblockedRangePossible(s);
+				if (s.getLength() > unblocked.size() / 2) {
+					int min = unblocked.get(unblocked.size()-1) - s.getLength() + 1;
+					// exclusive max
+					int max = unblocked.get(0) + s.getLength();
+					System.out.println("s = " + s +" im Bereich " +min + " bis " +max);
+					boolean[] enteredNumbers = new boolean[max-min+1];
+					for (Cell c: s.getState()) {
+						if (c.getEntry() != 0) enteredNumbers[c.getEntry() - min] = true;
+					}
+					for (int i = min; i < max; i++) {
+						if (!enteredNumbers[i-min]) missing.add(i);
 					}
 				}
 			}
@@ -337,9 +353,29 @@ public class Str8tSolver {
 					}
 				}
 			}
+			if (lengths.size() == 0) {
+				for (int u = 1; u <= s.getN(); u++) {
+					unblocked.add(u);
+				}
+			}
 		}
 		return unblocked;
-		
+	}
+	/*
+	 * cut unblocked range with possible entries
+	 */
+	public ArrayList<Integer> unblockedRangePossible(Street s) {
+		ArrayList<Integer> unblocked = unblockedRange(s);
+		ArrayList<Integer> possible = s.getPossible();
+		if (possible.size() > 0) {
+			for (int i = 0; i < unblocked.size(); i++) {
+				if (unblocked.get(i) < possible.get(0) || unblocked.get(i) > possible.get(possible.size()-1)) {
+					unblocked.remove(i);
+					i--;
+				}
+			}
+		}
+		return unblocked;
 	}
 	
 	/*
@@ -384,6 +420,11 @@ public class Str8tSolver {
 	 * check if missing numbers position is determined by orthogonal streets
 	 */
 	public void checkMissingOrthogonally(Street s) {
+		ArrayList<Integer>[] possibleInCells = new ArrayList[s.getState().length];
+		// initializing
+        for (int i = 0; i < s.getState().length; i++) {
+        	possibleInCells[i] = new ArrayList<Integer>();
+        }
 		for (int j = 0; j < s.getMissing().size(); j++) {
 			int m = s.getMissing().get(j);
 			int counter = 0;
@@ -393,6 +434,7 @@ public class Str8tSolver {
 				if (c.getEntry() == 0) {
 					Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
 					if (otherStreet.getPossible().contains(m) || otherStreet.getMissing().contains(m)) {
+						possibleInCells[i].add(m);
 						possible.add(true);
 						counter++;
 					} else {
@@ -403,12 +445,24 @@ public class Str8tSolver {
 					
 				}
 			}
+			// this number only in one position enterable
 			if (counter == 1) {
 				s = ApplyCellEntryChange.enterEntry(this, s, s.getState()[possible.indexOf(true)], m);
+				possibleInCells[possible.indexOf(true)] = new ArrayList<Integer>();
 				j--;
+				
 			}
 			possible.clear();
 		}
+		// if #missing = #untered: how many numbers enterable in each position?
+		if (s.getUnentered() == s.getMissing().size()) {
+			for (int i = 0; i < possibleInCells.length; i++) {
+				if (possibleInCells[i].size() == 1) {
+					s = ApplyCellEntryChange.enterEntry(this, s, s.getState()[i], possibleInCells[i].get(0));
+				}
+			}
+		}
+		
 	}
 	
 	/*

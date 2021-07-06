@@ -71,7 +71,7 @@ public class Helper {
 		for (int i = 0; i < blocked.size(); i++) {
 			lengths.add(blocked.get(i) - ((i > 0)?(blocked.get(i-1)):0) - 1); // could be zero if consecutive numbers blocked
 		}
-		lengths.add(n - blocked.get(blocked.size()-1));
+		if (blocked.size() > 0) lengths.add(n - blocked.get(blocked.size()-1));
 		return lengths;
 	}
 	
