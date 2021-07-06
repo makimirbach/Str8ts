@@ -63,7 +63,7 @@ public class ApplyPossibleChange {
 					}
 				}
 			}
-			possible.removeAll(findIsolated(s));
+			if(s.getLength() > 1)  possible.removeAll(findIsolated(s));
 			s.setPossible(possible);
 			s = possibleChanged(s);
 		}
