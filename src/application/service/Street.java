@@ -115,9 +115,8 @@ public class Street {
 	public Solvability checkStr8t() {
 		int min = getMin(); // smallest number > 0 
 		int max = getMax(); 
-		
 		if (max == 0) return Solvability.SOLVABLE; // nothing entered yet
-		
+		//
 		if (max-min+1 > this.length) {
 			return Solvability.UNSOLVABLE;
 		} else {
@@ -143,7 +142,7 @@ public class Street {
 	
 	@Override
 	public String toString() {
-		return "\nStreet: " + Helper.getEntriesToString(this.state) + "(" + this.length + "), starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ")" + ((this.getEntered() < this.length)? " blocked: " + this.getBlocked() + " missing " + this.getMissing() + " possible " + this.getPossible() : "");
+		return "\nStreet: " + Str8tsUtil.getEntriesToString(this.state) + "(" + this.length + "), starting in (" + this.getState()[0].getX() + "," + this.getState()[0].getY() + ")" + ((this.getEntered() < this.length)? " blocked: " + this.getBlocked() + " missing " + this.getMissing() + " possible " + this.getPossible() : "");
 	}
 	
 	

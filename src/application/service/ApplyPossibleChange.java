@@ -6,17 +6,18 @@ public class ApplyPossibleChange {
 	/*
 	 * find isolated possibles that aren't relevant for street
 	 */
-	public static ArrayList<Integer> findIsolated(Street s) {
+	public static ArrayList<Integer> findIsolated(Street s) 
+	{
 		ArrayList<Integer> isolated = new ArrayList<>();
 		for (int p: s.getPossible()) {
 			if (p > 1 && p < s.getN()) {
-				if (!Helper.checkRelevantInStreet(s, p+1) && !Helper.checkRelevantInStreet(s, p-1)) {
+				if (!Str8tsUtil.checkRelevantInStreet(s, p+1) && !Str8tsUtil.checkRelevantInStreet(s, p-1)) {
 					isolated.add(p);
 				}
 			} else if (p == 1) {
-				if (!Helper.checkRelevantInStreet(s, p+1)) isolated.add(p);
+				if (!Str8tsUtil.checkRelevantInStreet(s, p+1)) isolated.add(p);
 			} else {
-				if (!Helper.checkRelevantInStreet(s, p-1)) isolated.add(p);
+				if (!Str8tsUtil.checkRelevantInStreet(s, p-1)) isolated.add(p);
 			}
 		}
 		
@@ -26,7 +27,8 @@ public class ApplyPossibleChange {
 	/*
 	 * if #possible + #missing = #unentered, all are missing
 	 */
-	public static Street possibleChanged(Str8tSolver str8t, Street s) {
+	public static Street possibleChanged(Str8tSolver str8t, Street s) 
+	{
 	    if (s.getPossible().size() + s.getMissing().size() == s.getUnentered()) {
 	    	s = ApplyMissingChange.addMissing(str8t, s, s.getPossible());
 	    	s.setPossible(new ArrayList<Integer>());
@@ -37,10 +39,11 @@ public class ApplyPossibleChange {
 	/*
 	 * add possible entries
 	 */
-	public static Street addPossible(Str8tSolver str8t, Street s, ArrayList<Integer> newPossible) {
+	public static Street addPossible(Str8tSolver str8t, Street s, ArrayList<Integer> newPossible) 
+	{
 		ArrayList<Integer> possible = s.getPossible();
 		possible.addAll(newPossible);
-		s.setPossible(Helper.deleteDuplicates(possible));
+		s.setPossible(Str8tsUtil.deleteDuplicates(possible));
 		s = possibleChanged(str8t, s);
 		return s;
 	}
@@ -48,7 +51,8 @@ public class ApplyPossibleChange {
 	/*
 	 * remove possible entry: might remove some more!
 	 */
-	public static Street removePossible(Str8tSolver str8t, Street s, int toRemove) {
+	public static Street removePossible(Str8tSolver str8t, Street s, int toRemove) 
+	{
 		ArrayList<Integer> possible = s.getPossible();
 		if (possible.contains(toRemove)) {
 			int index = possible.indexOf(toRemove);

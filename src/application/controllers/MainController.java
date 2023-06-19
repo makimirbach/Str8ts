@@ -6,8 +6,8 @@ import java.util.ResourceBundle;
 import application.constants.GameState;
 import application.constants.Messages;
 import application.listeners.IGameListener;
-import application.service.Helper;
 import application.service.Str8t;
+import application.service.Str8tsUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -29,12 +29,12 @@ public class MainController implements Initializable, IGameListener {
 	private CheckBox checkHints;
 	
 	
-	
 	/*
 	 * init layout
 	 */
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	public void initialize(URL arg0, ResourceBundle arg1) 
+	{
 		
 		gameController.state = GameState.BEFORE;
 		gameController.setGameListener(this);
@@ -42,8 +42,8 @@ public class MainController implements Initializable, IGameListener {
 		init();	
 	}
 	
-	
-	public void init() {
+	public void init() 
+	{
 		if (gameController.state != GameState.BEFORE) {
 			gameController.gpBase.setVisible(false);
 			gameController.state = GameState.BEFORE;
@@ -52,7 +52,8 @@ public class MainController implements Initializable, IGameListener {
 		checkHints.setVisible(false);
 	}
 	
-	public void startGame(int n) {
+	public void startGame(int n) 
+	{
 		if (gameController.state == GameState.BEFORE) {
 			gameController.gpBase.setVisible(true);
 			gameController.showCorrect = false;
@@ -62,7 +63,7 @@ public class MainController implements Initializable, IGameListener {
 			int[][] m = {{-4,6,5,0,1,2},{5,4,6,3,2,1},{6,5,0,4,3,0},{0,1,2,0,6,5},{2,3,1,-6,5,4},{3,2,0,5,4,0}}; 
 			//int[][] s = {{4,6,5,0,1,2},{5,4,6,3,2,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{2,3,1,6,5,4},{3,2,0,5,4,0}};
 			int[][] s = {{4,6,0,0,0,0},{0,0,0,0,0,1},{0,0,0,4,3,0},{0,0,0,0,0,0},{0,3,1,6,0,0},{3,0,0,0,4,0}};
-			gameController.str8t = new Str8t(n, Helper.cellMatrixFromEntries(m,m), Helper.cellMatrixFromEntries(s,m));
+			gameController.str8t = new Str8t(n, Str8tsUtil.cellMatrixFromEntries(m,m), Str8tsUtil.cellMatrixFromEntries(s,m));
 			gameController.initGrid(n);
 			gameController.state = GameState.PLAYING;
 		}	
@@ -71,14 +72,16 @@ public class MainController implements Initializable, IGameListener {
 	/*
 	 * mouse hover on help button
 	 */
-	public void showHelpTip() {
+	public void showHelpTip() 
+	{
 		btnHelp.setTooltip(new Tooltip(Messages.HELP_MENU));
 	}
 	
 	/*
 	 * click on help button
 	 */
-	public void showHelp() {
+	public void showHelp() 
+	{
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 	    alert.setTitle(Messages.HELP_MENU);
 	    alert.setHeaderText(Messages.RULES_HEADER);
@@ -89,7 +92,8 @@ public class MainController implements Initializable, IGameListener {
 	/*
 	 * click on checkbox 'hints'
 	 */
-	public void handleCheckHints() {
+	public void handleCheckHints() 
+	{
 		if (checkHints.isSelected()) {
 			gameController.showCurrentCorrect();
 			gameController.showCorrect = true;
@@ -100,7 +104,8 @@ public class MainController implements Initializable, IGameListener {
 	}
 
 	@Override
-	public void onGameOver() {
+	public void onGameOver() 
+	{
 		if (gameController.state != GameState.AFTER) {
 			gameController.state = GameState.AFTER;
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -112,11 +117,9 @@ public class MainController implements Initializable, IGameListener {
 		}
 	}
 
-
-
-
 	@Override
-	public void onGameStart() {
+	public void onGameStart() 
+	{
 		startGame(startController.getN());
 		
 	}

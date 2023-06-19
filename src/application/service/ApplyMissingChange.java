@@ -9,7 +9,7 @@ public class ApplyMissingChange {
 	public static Street addMissing(Str8tSolver str8t, Street s, ArrayList<Integer> newMissing) {
 		ArrayList<Integer> missing = s.getMissing();
 		missing.addAll(newMissing);
-		s.setMissing(Helper.deleteDuplicates(missing));
+		s.setMissing(Str8tsUtil.deleteDuplicates(missing));
 		// those are not longer (only) possible here
 		// and no longer possible in streets in line
 		ArrayList<Street> streetsInLine = str8t.streetsInLine(s);

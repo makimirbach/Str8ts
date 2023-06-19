@@ -12,7 +12,8 @@ public class Str8tSolver {
 	private LinkedList<Street> streets;
 	
 	
-	public Str8tSolver(Cell[][] state, Cell[][] solution, int n) {
+	public Str8tSolver(Cell[][] state, Cell[][] solution, int n) 
+	{
 		this.state = state;
 		this.solution = solution;
 		this.n = n;
@@ -23,36 +24,24 @@ public class Str8tSolver {
 			}
 		}
 	}
-	public Cell[][] getState() {
-		return state;
-	}
-	public void setState(Cell[][] state) {
-		this.state = state;
-	}
-	public Cell[][] getSolution() {
-		return solution;
-	}
-	public void setSolution(Cell[][] solution) {
-		this.solution = solution;
-	}
-	public int getN() {
-		return n;
-	}
-	public void setN(int n) {
-		this.n = n;
-	}
-	public LinkedList<Street> getStreets() {
-		return streets;
-	}
-	public void setStreets(LinkedList<Street> streets) {
-		this.streets = streets;
-	}
+	public Cell[][] getState() { return state; }
+	public void setState(Cell[][] state) { this.state = state; }
+	
+	public Cell[][] getSolution() {	return solution; }
+	public void setSolution(Cell[][] solution) { this.solution = solution; }
+	
+	public int getN() {	return n; }
+	public void setN(int n) { this.n = n; }
+	
+	public LinkedList<Street> getStreets() { return streets; }
+	public void setStreets(LinkedList<Street> streets) { this.streets = streets; }
 
 	
 	/*
 	 * check if row does not contain duplicates
 	 */
-	public boolean checkDuplicatesRow(int r) {
+	public boolean checkDuplicatesRow(int r) 
+	{
 		int t = 0;
 		for (int i = 0; i < this.n; i++) {
 			t = this.state[r][0].getEntry();
@@ -70,7 +59,8 @@ public class Str8tSolver {
 	/*
 	 * check if column does not contain duplicates
 	 */
-	public boolean checkDuplicatesColumn(int c) {
+	public boolean checkDuplicatesColumn(int c) 
+	{
 		int t = 0;
 		for (int i = 0; i < this.n; i++) {
 			t = this.state[0][c].getEntry();
@@ -88,7 +78,8 @@ public class Str8tSolver {
 	/*
 	 * init: get all streets from initial state
 	 */
-	public LinkedList<Street> getAllStreets() {
+	public LinkedList<Street> getAllStreets() 
+	{
 		LinkedList<Street> streets = new LinkedList<Street>();
 		LinkedList<Cell> streetCells = new LinkedList<Cell>();
 		
@@ -99,11 +90,11 @@ public class Str8tSolver {
 				if (currentCell.getCellType() == CellType.WHITE) {
 					streetCells.add(currentCell);
 				} else if (streetCells.size() > 0) {
-					streets.add(new Street(Helper.cellListToArray(streetCells), this.n, true));
+					streets.add(new Street(Str8tsUtil.cellListToArray(streetCells), this.n, true));
 					streetCells.clear();
 				}
 			}
-			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n, true));
+			if (streetCells.size() > 0) streets.add(new Street(Str8tsUtil.cellListToArray(streetCells), this.n, true));
 			streetCells.clear();
 			
 			// vertical
@@ -112,11 +103,11 @@ public class Str8tSolver {
 				if (currentCell.getCellType() == CellType.WHITE) {
 					streetCells.add(currentCell);
 				} else if (streetCells.size() > 0) {
-					streets.add(new Street(Helper.cellListToArray(streetCells), this.n, false));
+					streets.add(new Street(Str8tsUtil.cellListToArray(streetCells), this.n, false));
 					streetCells.clear();
 				}
 			}
-			if (streetCells.size() > 0) streets.add(new Street(Helper.cellListToArray(streetCells), this.n, false));
+			if (streetCells.size() > 0) streets.add(new Street(Str8tsUtil.cellListToArray(streetCells), this.n, false));
 			streetCells.clear();
 		}
 		
@@ -140,7 +131,8 @@ public class Str8tSolver {
 	/*
 	 * get streets in same row (horizontal) or column respectively
 	 */
-	public ArrayList<Street> streetsInLine(Street s) {
+	public ArrayList<Street> streetsInLine(Street s) 
+	{
 		int r = s.getState()[0].getX();
 		int c = s.getState()[0].getY();
 		ArrayList<Street> streets = new ArrayList<Street>();
@@ -169,10 +161,12 @@ public class Str8tSolver {
 		}
 		return streets;
 	}
+	
 	/*
 	 * which numbers are missing in this street FOR SURE?
 	 */
-	public void findMissing(Street s) {
+	public void findMissing(Street s) 
+	{
 		if (s.getMissing().size() < s.getUnentered()) {
 			ArrayList<Integer> missing = new ArrayList<Integer>();
 			if (s.getMax() != 0) {
@@ -229,14 +223,15 @@ public class Str8tSolver {
 					if (!enteredNumbers[i-min]) missing.add(i);
 				}
 			}
-			
 			s = ApplyMissingChange.addMissing(this, s, missing);
 		}
 	}
+	
 	/*
 	 * which streets are affected by changing cell c in street s
 	 */
-	public ArrayList<Street> getConcernedSteets(Street s, Cell c) {
+	public ArrayList<Street> getConcernedSteets(Street s, Cell c) 
+	{
 		ArrayList<Street> concernedStreets = new ArrayList<Street>();
 		Street otherStreet = (s.isHorizontal() ? cellInStreets(c)[1] : cellInStreets(c)[0]);
 		concernedStreets.add(otherStreet);
@@ -248,7 +243,8 @@ public class Str8tSolver {
 	/*
 	 * if only one missing and one unentered, enter it. remove it from missing (and possible of other street(s))
 	 */
-	public void checkCanEnterMissing(Street s) {
+	public void checkCanEnterMissing(Street s) 
+	{
 		if (s.getMissing().size() == 1 && s.getUnentered() == 1) {
 			for (Cell c: s.getState()) {
 				if (c.getEntry() == 0) {
@@ -258,10 +254,12 @@ public class Str8tSolver {
 			}
 		}
 	}
+	
 	/*
 	 * which numbers are blocked for all entrys in steet s 
 	 */
-	public void blockedInStreet(Street s) {
+	public void blockedInStreet(Street s) 
+	{
 		int r = s.getState()[0].getX();
 		int c = s.getState()[0].getY();
 		ArrayList<Integer> blocked = new ArrayList<Integer>();
@@ -316,7 +314,7 @@ public class Str8tSolver {
 			}
 		} else {
 			// consider length
-			ArrayList<Integer> lengths = Helper.getLengthsBetweenBlocked(blocked, s.getN());
+			ArrayList<Integer> lengths = Str8tsUtil.getLengthsBetweenBlocked(blocked, s.getN());
 			for (int i = 0; i < lengths.size(); i++) {
 				if (lengths.get(i) >= s.getLength()) {
 					if (i == 0) {

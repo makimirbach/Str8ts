@@ -6,11 +6,12 @@ import java.util.LinkedList;
 
 import application.constants.CellType;
 
-public class Helper {
+public class Str8tsUtil {
 	/*
 	 * convert ArrayList of Integers to array of ints
 	 */
-	public static int[] listToArray(ArrayList<Integer> l) {
+	public static int[] listToArray(ArrayList<Integer> l) 
+	{
 		int[] a = new int[l.size()];
 		for (int i = 0; i < l.size(); i++) {
 			a[i] = l.get(i);
@@ -21,7 +22,8 @@ public class Helper {
 	/*
 	 * convert LinkedList of Cells to array of Cells
 	 */
-	public static Cell[] cellListToArray(LinkedList<Cell> l) {
+	public static Cell[] cellListToArray(LinkedList<Cell> l) 
+	{
 		Cell[] a = new Cell[l.size()];
 		for (int i = 0; i < l.size(); i++) {
 			a[i] = l.get(i);
@@ -32,7 +34,8 @@ public class Helper {
 	/*
 	 * convert ArrayList of Streets to array of Streets
 	 */
-	public static Street[] streetListToArray(ArrayList<Street> l) {
+	public static Street[] streetListToArray(ArrayList<Street> l) 
+	{
 		Street[] a = new Street[l.size()];
 		for (int i = 0; i < l.size(); i++) {
 			a[i] = l.get(i);
@@ -43,7 +46,8 @@ public class Helper {
 	/*
 	 * get array of entries from array of cells
 	 */
-	public static int[] getEntries(Cell[] cells) {
+	public static int[] getEntries(Cell[] cells) 
+	{
 		int[] entries = new int[cells.length];
 		for (int i = 0; i < cells.length; i++) {
 			entries[i] = cells[i].getEntry();
@@ -54,7 +58,8 @@ public class Helper {
 	/*
 	 * cell-entries to string
 	 */
-	public static String getEntriesToString(Cell[] cells) {
+	public static String getEntriesToString(Cell[] cells) 
+	{
 		int[] entries = getEntries(cells);
 		String e = "";
 		for (int i: entries) {
@@ -66,7 +71,8 @@ public class Helper {
 	/*
 	 * how much space between blocked entries (sorted ascendingly)
 	 */
-	public static ArrayList<Integer> getLengthsBetweenBlocked(ArrayList<Integer> blocked, int n) {
+	public static ArrayList<Integer> getLengthsBetweenBlocked(ArrayList<Integer> blocked, int n) 
+	{
 		ArrayList<Integer> lengths = new ArrayList<Integer>();
 		for (int i = 0; i < blocked.size(); i++) {
 			lengths.add(blocked.get(i) - ((i > 0)?(blocked.get(i-1)):0) - 1); // could be zero if consecutive numbers blocked
@@ -78,7 +84,8 @@ public class Helper {
 	/*
 	 * delete duplicates from array list
 	 */
-	public static ArrayList<Integer> deleteDuplicates(ArrayList<Integer> list) {
+	public static ArrayList<Integer> deleteDuplicates(ArrayList<Integer> list) 
+	{
 		HashSet<Integer> hashSet = new HashSet<Integer>();
 		hashSet.addAll(list);
 		list.clear();
@@ -86,12 +93,11 @@ public class Helper {
 		return list;
 	}
 	
-	
-	
 	/*
 	 * check if int plays any role in street, i.e. is entered, possible or missing
 	 */
-	public static boolean checkRelevantInStreet(Street s, int i) {
+	public static boolean checkRelevantInStreet(Street s, int i) 
+	{
 		if (i <= s.getMax() && i >= s.getMin()) return true;
 		for (int p: s.getPossible()) {
 			if (i == p) return true;
@@ -109,7 +115,8 @@ public class Helper {
 	/*
 	 * generate cell-2d-array from state and solution
 	 */
-	public static Cell[][] cellMatrixFromEntries(int[][] state, int[][] solution) {
+	public static Cell[][] cellMatrixFromEntries(int[][] state, int[][] solution) 
+	{
 		Cell[][] cells = new Cell[state.length][state.length];
 		
 		for (int i = 0; i < state.length; i++) {

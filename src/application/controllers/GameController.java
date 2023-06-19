@@ -31,23 +31,19 @@ public class GameController implements Initializable{
 	
 	private IGameListener gameListener;
 	
-	public void setGameListener(IGameListener gameListener) {
-		this.gameListener = gameListener;
-	}
+	public void setGameListener(IGameListener gameListener) { this.gameListener = gameListener; }
 	
 
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		
-	}	
+	public void initialize(URL arg0, ResourceBundle arg1) {	}	
 	
 	/*
 	 * init n x n- grid layout of labels
 	 */
-	public void initGrid(int n) {
+	public void initGrid(int n) 
+	{
 		double gridHeight = gpBase.getHeight();
 		double cellMeasure = gridHeight/n;
-		
 		gpBase.setGridLinesVisible(true);
 		// n x n layout grid
 		if (gpBase.getColumnConstraints().size() == 0) {
@@ -56,8 +52,6 @@ public class GameController implements Initializable{
 				gpBase.getRowConstraints().add(new RowConstraints(cellMeasure));
 			}
 		}
-		
-		
 		gridTf = new TextField[n][n];
 		// fill with textfields
 		for (int i = 0; i < n; i++) {
@@ -65,10 +59,8 @@ public class GameController implements Initializable{
 				TextField newField = new TextField();
 				newField.setId("tf"+i+j);
 				newField.setMaxSize(cellMeasure, cellMeasure);
-			
 				// paint black cells
 				if (str8t.getSolution()[i][j].getEntry() <= 0) {
-					
 					newField.getStyleClass().addAll("blocked-black", "blocked");
 					// white numbers on black cells
 					if (str8t.getSolution()[i][j].getEntry() < 0) newField.setText(Integer.toString(str8t.getState()[i][j].getEntry()));
@@ -76,7 +68,6 @@ public class GameController implements Initializable{
 				}
 				// black numbers on white cells from state
 				else if (str8t.getState()[i][j].getEntry() != 0) {
-					
 					newField.setText(Integer.toString(str8t.getState()[i][j].getEntry()));
 					newField.getStyleClass().addAll("blocked-white", "blocked");
 					newField.setEditable(false);
@@ -97,7 +88,6 @@ public class GameController implements Initializable{
 						}
 					});
 				}
-				
 				gpBase.add(newField, j, i);  // column=i row=j
 				gridTf[i][j] = newField;
 			}
@@ -109,10 +99,10 @@ public class GameController implements Initializable{
 	 * just one number: enter it
 	 * several: -> notes
 	 */
-	public void tfExit(int i, int j) {
+	public void tfExit(int i, int j) 
+	{
 		if (state == GameState.PLAYING) {
 			TextField tf = gridTf[i][j]; 
-			
 			if (!tf.getText().equals("")) {
 				// more than one number entered
 				if (tf.getText().length() > 1) {
@@ -134,15 +124,11 @@ public class GameController implements Initializable{
 					} else {
 						tf.setText("");
 						str8t.getState()[i][j].setEntry(0);
-						
 					}
-				}
-				
+				}	
 			} else str8t.getState()[i][j].setEntry(0);
-			
 			if (str8t.gameOver()) {
 				this.gameListener.onGameOver();
-				
 			}
 		}
 	}
@@ -150,7 +136,8 @@ public class GameController implements Initializable{
 	/*
 	 * color this one entry
 	 */
-	public void showThisCorrect(int i,int j) {
+	public void showThisCorrect(int i,int j) 
+	{
 		if (str8t.checkNumberCorrect(i, j)) {
 			gridTf[i][j].getStyleClass().remove("false");
 			gridTf[i][j].getStyleClass().add("correct");
@@ -163,14 +150,16 @@ public class GameController implements Initializable{
 	/*
 	 * uncolor this one entry
 	 */
-	public void unshowThisCorrect(int i,int j) {
+	public void unshowThisCorrect(int i,int j) 
+	{
 		gridTf[i][j].getStyleClass().removeAll("false", "correct");
 	}
 	
 	/*
 	 * color all (by user entered) numbers red (false) or green (correct)
 	 */
-	public void showCurrentCorrect() {
+	public void showCurrentCorrect() 
+	{
 		for (int i = 0; i < str8t.getN(); i++) {
 			for (int j = 0; j< str8t.getN(); j++) {
 				if (!gridTf[i][j].getStyleClass().contains("blocked") && str8t.getState()[i][j].getEntry() != 0) {
@@ -187,7 +176,8 @@ public class GameController implements Initializable{
 	/*
 	 * uncolor all numbers
 	 */
-	public void unshowCorrect() {
+	public void unshowCorrect() 
+	{
 		for (int i = 0; i < str8t.getN(); i++) {
 			for (int j = 0; j < str8t.getN(); j++) {
 				gridTf[i][j].getStyleClass().removeAll("false", "correct");
@@ -201,6 +191,5 @@ public class GameController implements Initializable{
 	public boolean validEntry(int x) {
 		return x > 0 && x <= str8t.getN();
 	}
-
 
 }
